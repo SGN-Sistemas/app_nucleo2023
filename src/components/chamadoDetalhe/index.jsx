@@ -53,7 +53,7 @@ export default function App({ route }) {
     async function puxaChamadoDetalheAndroid() {
 
         setLoading(true)
-        await fetch('http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamado_detalhe', {
+        await fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamado_detalhe', {
             method: 'POST',
             body: JSON.stringify({
                 "idchamado": chamado.cod_chamado,
@@ -75,7 +75,7 @@ export default function App({ route }) {
     async function puxaChamadoDetalheIos() {
 
         //setLoading(true)
-        await fetch('http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamado_detalhe', {
+        await fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamado_detalhe', {
             method: 'POST',
             body: JSON.stringify({
                 "idchamado": chamado.cod_chamado,

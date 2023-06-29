@@ -19,10 +19,12 @@ const App = () => {
   const [atualizaResp,setAtualizaResp] = useState(0)
   const [atualizaChamado,setAtualizaChamado] = useState(false)
   const [atualizaChamadoDetalhe,setAtualizaChamadoDetalhe] = useState(false)
-
+  const [horarioAlert12H, setHorarioAlert12H] = useState(false)
+  const [att,setAtt] = useState(false)
   return (
 <AuthContext.Provider value={{idUser, setIdUser, codPessoa, setCodPessoa, idEmpresa, setIdEmpresa,atualizaResp,
-  setAtualizaResp,atualizaChamado,setAtualizaChamado,atualizaChamadoDetalhe,setAtualizaChamadoDetalhe, codigoUsuario,setCodigoUsuario,modalResp, setModalResp}}>
+      setAtualizaResp, atualizaChamado, setAtualizaChamado, atualizaChamadoDetalhe, setAtualizaChamadoDetalhe, codigoUsuario, setCodigoUsuario, modalResp, setModalResp, horarioAlert12H, setHorarioAlert12H, att, setAtt
+}}>
     <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen

@@ -42,7 +42,7 @@ export default function FlatListItem({ item }) {
         <Image
         style={styles.image}
         source={{
-          uri: 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/_lib/file/img/chamado/'+item.arquivo,
+          uri: 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/_lib/file/img/chamado/'+item.arquivo,
         }}
       />
       :

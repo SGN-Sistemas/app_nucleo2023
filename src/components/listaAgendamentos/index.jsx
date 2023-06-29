@@ -14,7 +14,7 @@ const [objImg,setObjImg] = useState()
 const [loading, setLoading] = useState(false)
 const [refreshing, setRefreshing] = useState(false);
 
-const {idUser, setIdUser} = useContext(AuthContext)
+const {idUser, setIdUser,att} = useContext(AuthContext)
 
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -40,7 +40,9 @@ const requisicao = async () => {
   .then((json) => {
         setAccessToken(() => json.access_token)
         let token = json.access_token
-
+        console.log('====================================');
+        console.log(idUser);
+        console.log('====================================');
         fetch('https://api.ninsaude.com/v1/atendimento_agenda/listar/paciente/'+idUser, {
           method: 'GET',
           headers: {
@@ -50,7 +52,7 @@ const requisicao = async () => {
           }
         })
         .then((resp) => resp.json())
-        .then((json) => {
+          .then((json) => {
           let pacientes_temp = json.result;
           let now = new Date();
           let dt_formatado = now.toISOString().slice(0,10);
@@ -84,7 +86,7 @@ useEffect(() => {
 
   //return () => ac.abort();
 
-},[])
+},[att])
 
 useEffect(() => {
 

@@ -6,11 +6,13 @@ import {
   Image,
   Modal,
 } from "react-native";
-import { ModalAppConfirmaAgendamento, ModalAppNaoConfirmaAgendamento, ModalAppCovid, ModalAlertConf, ModalAlertNaoConf, ModalEnviaMotivo, ModalAlertHorario } from "../Modal/ModalApp";
+import { ModalAppConfirmaAgendamento, ModalAppNaoConfirmaAgendamento, ModalAppCovid, ModalAlertConf, ModalAlertNaoConf, ModalEnviaMotivo, ModalAlertHorario, ModalAlertConfCanc } from "../Modal/ModalApp";
 import styles from './styles.jsx'
+import { AuthContext } from '../../contexts/ContextApi.jsx';
+
 
 function Agendamento(props) {
-
+  const { setHorarioAlert12H } = useContext(AuthContext)
   const [modalConfirm, setModalConfirm] = useState(false);
 
   const [modalNoConfirm, setModalNoConfirm] = useState(false);
@@ -24,6 +26,8 @@ function Agendamento(props) {
   const [modalCovid, setModalCovid] = useState(false);
 
   const [modalAlertHorario, setModalAlertHorario] = useState(false);
+
+  const [modalAlertConfCanc, setModalAlertConfCanc] = useState(false)
 
   function openModalCovid() {
     if (modalCovid == false) {
@@ -125,7 +129,7 @@ function Agendamento(props) {
     if (diffDate == 0) {
 
       if (diffHora <= 12 || diffHora >= 0) {
-
+        setHorarioAlert12H(true)
         openModalAlertHorario();
 
       }
@@ -203,7 +207,6 @@ function Agendamento(props) {
               dataFormatada={dataFormatada}
               horaFormatada={horaFormatada}
               textoBotao="Confirmar"
-              obj={props.data}
               fechar={() => openModalConfirmar()}
               clinica={props.data.accountUnidadeDescricao}
               abrirAlert={() => openModalAlertConf()}
@@ -223,11 +226,18 @@ function Agendamento(props) {
         <Modal transparent={true} animationType="fadeIn" visible={modalAlertNaoConf}>
           <View style={styles.modalContainer}>
             <ModalAlertNaoConf
-              modalOpen={() => openModalAlertNaoConf()}
+              modalOpen={() => { setModalAlertConfCanc(!modalAlertConfCanc) }}
               textoBotao="OK!"
               texto="Agendamento Cancelado"
             />
           </View>
+        </Modal>
+        <Modal transparent={true} animationType="fadeIn" visible={modalAlertConfCanc}>
+          <ModalAlertConfCanc
+            obj={props.data}
+            modalOpen={() => { setModalAlertConfCanc(!modalAlertConfCanc) }}
+            abrirAlert={() => openModalAlertNaoConf()}
+          />
         </Modal>
         <Modal transparent={true} animationType="fadeIn" visible={modalCovid}>
           <View style={styles.modalContainer}>

@@ -1657,10 +1657,10 @@
     prompts "^2.4.0"
     semver "^6.3.0"
 
-"@react-native-community/datetimepicker@^6.5.2":
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-6.5.2.tgz#d2c0df9f2c6acce39f7e957743dd811547656098"
-  integrity sha512-9K3zhIH1zmpIGSG3GJTWLIoAx+sR4kJ1wqpGKMwWJ5IYXBsFxMdvGw023t0pz2CQStlnNbbNhnZY/HMYFBCsCg==
+"@react-native-community/datetimepicker@6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-6.2.0.tgz#50bc629e70e4030c48205c01efbc65a8f35d82d4"
+  integrity sha512-w1ZS+wYO3qSASliRp+B7mPphOhtVm++rhSbj1WsgXdgLgDXSkDxpMnAXXQu9M0XdcgBwVJ6wDExeIwuzU5Jtfg==
   dependencies:
     invariant "^2.2.4"
 
@@ -3072,16 +3072,24 @@ expo-keep-awake@~10.2.0:
   resolved "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-10.2.0.tgz"
   integrity sha512-kIRtO4Hmrvxh4E45IPWG/NiUZsuRe1AQwBT09pq+kx8nm6tUS4B9TeL6+1NFy+qVBLbGKDqoQD5Ez7XYTFtBeQ==
 
-expo-linking@~3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/expo-linking/-/expo-linking-3.2.2.tgz#88272cc6d4aab9804d7a1f6c2521cae00b1477a2"
-  integrity sha512-2OY7WAyZXuc8zdTGm2rLu5ESJaFL2TYmPHsJuDJcfIJFaw+nS5vIVk5DGPlk+zCNC3uoqT02t7a5PZVp2bvqtQ==
+expo-linking@~3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/expo-linking/-/expo-linking-3.2.4.tgz#94d65ee957f45e2d2e12a25df7ad063a17807eee"
+  integrity sha512-yVH72hqridgxiknuqeVs5ZClxIaEft2xyDfC9+x8pSelGb1oMnaOYY4muE9ytph6VCXbmMI9VNf0etrfFoDLqQ==
   dependencies:
     "@types/qs" "^6.5.3"
     expo-constants "~13.2.0"
     invariant "^2.2.4"
     qs "^6.9.1"
     url-parse "^1.5.9"
+
+expo-local-authentication@~12.3.0:
+  version "12.3.0"
+  resolved "https://registry.yarnpkg.com/expo-local-authentication/-/expo-local-authentication-12.3.0.tgz#eb44fd6e58eca55cb3240ebdf54f603f7019b2d2"
+  integrity sha512-7rL2La2VneAXANTNtTV3kihbq+EYv0uRLL/8aZ/A+jPg2mHwMuwKHVaCLHuq1pR+MAV47JbiHeEh+Mx/t534dA==
+  dependencies:
+    "@expo/config-plugins" "~5.0.0"
+    invariant "^2.2.4"
 
 expo-manifests@~0.3.0:
   version "0.3.1"
@@ -5445,10 +5453,10 @@ react-native-codegen@^0.69.2:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-gesture-handler@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.8.0.tgz"
-  integrity sha512-poOSfz/w0IyD6Qwq7aaIRRfEaVTl1ecQFoyiIbpOpfNTjm2B1niY2FLrdVQIOtIOe+K9nH55Qal04nr4jGkHdQ==
+react-native-gesture-handler@~2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.5.0.tgz#61385583570ed0a45a9ed142425e35f8fe8274fb"
+  integrity sha512-djZdcprFf08PZC332D+AeG5wcGeAPhzfCJtB3otUgOgTlvjVXmg/SLFdPJSpzLBqkRAmrC77tM79QgKbuLxkfw==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"
@@ -5497,10 +5505,10 @@ react-native-vector-icons@^9.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native@0.69.6:
-  version "0.69.6"
-  resolved "https://registry.npmjs.org/react-native/-/react-native-0.69.6.tgz"
-  integrity sha512-wwXpqM+12kdEYdBZCJUb5SBu95CzgejrwFeYJ78RzHZV/Sj6DBRekbsHGrDDsY4R25QXALQxy4DQYQCObVvWjA==
+react-native@0.69.9:
+  version "0.69.9"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.69.9.tgz#c988dfc2e21b3b586d35a8cc57b102537e760edc"
+  integrity sha512-I1xqIn47RWxBToO4E6yqyIPSaK9mZnMiscMfrFpWjQr3Gdkicr9y+twmtrRszxaLdQLjHzh/M3y4qOqc3hZnpg==
   dependencies:
     "@jest/create-cache-key-function" "^27.0.1"
     "@react-native-community/cli" "^8.0.4"

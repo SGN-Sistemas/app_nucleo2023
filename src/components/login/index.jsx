@@ -7,6 +7,9 @@ import {
 import styles from './styles';
 import { ModalAppConfirma, ModalAppErro, ModalAlertAtt } from '../Modal/ModalApp'
 import { AuthContext } from '../../contexts/ContextApi'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as LocalAuthentication from 'expo-local-authentication'
+
 //sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo
 //192.168.102.205
 function Login({ navigation, route }) {
@@ -20,9 +23,32 @@ function Login({ navigation, route }) {
   const [modalAtt, setModalAtt] = useState(false);
   const [versao, setVersao] = useState(0);
   const [linking, setLinking] = useState("");
-  const url = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?login'
-  const urlIdEnvia = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?EnviaCodigo';
+  const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?login'
+  const urlIdEnvia = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?EnviaCodigo';
   const { idUser, setIdUser, codPessoa, setCodPessoa, idEmpresa, setIdEmpresa, codigoUsuario, setCodigoUsuario } = useContext(AuthContext)
+
+  const storeData = async (login, password) => {
+    try {
+      await AsyncStorage.setItem('login', login)
+      await AsyncStorage.setItem('password', password)
+    } catch (e) {
+      alert('Error ' + e)
+    }
+  }
+
+  useEffect(() => {
+    (
+      async () => {
+        biometricLogin()
+        const pws = await AsyncStorage.getItem('password')
+        setSenha(pws)
+        const lgn = await AsyncStorage.getItem('login')
+        setLogin(lgn)
+        
+      }
+    )()
+
+  }, [])
 
   function irRecuperarSenha() {
     var e;
@@ -52,13 +78,13 @@ function Login({ navigation, route }) {
     let numberVersion = '';
     let platform = '';
     if (Platform.OS == 'android') {
-      numberVersion = 17;
+      numberVersion = 23;
       platform = "android";
     } else if (Platform.OS == 'ios') {
       numberVersion = 12;
       platform = "ios";
     }
-    fetch("http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?verificarVersaoApp", {
+    fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?verificarVersaoApp", {
       method: "POST",
       body: JSON.stringify({
         'numberVersion': numberVersion,
@@ -95,7 +121,7 @@ function Login({ navigation, route }) {
     }
   }
 
-  function entrar() {
+  function entrar(login,senha) {
 
     if (login == '' || senha == '') {
       setIsModalError(true)
@@ -129,6 +155,7 @@ function Login({ navigation, route }) {
 
             if (json.id != "" && json.id != 0) {
               setIdUser(json.id);
+              storeData(login, senha)
               navigation.navigate('Home')
             } else {
               buscarPaciente(json.cpf, json.telefone);
@@ -140,6 +167,35 @@ function Login({ navigation, route }) {
         .catch((error) => alert('error: ' + error))
     }
 
+  }
+
+  const biometricLogin = async () => {
+    const compatible = await LocalAuthentication.hasHardwareAsync()
+
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync()
+
+    const valuePassword = await AsyncStorage.getItem('password')
+    const valueUSER = await AsyncStorage.getItem('login')
+
+    if (valuePassword !== null && valueUSER !== null) {
+      if (compatible) {
+        if (savedBiometrics) {
+          const validAuth = await LocalAuthentication.authenticateAsync({
+            promptMessage: 'Login com biometria'
+          })
+
+          if (validAuth.success) {
+            entrar(valueUSER, valuePassword)
+          } else {
+            try {
+              await AsyncStorage.setItem('password', '')
+            } catch (e) {
+              alert('Error ' + e)
+            }
+          }
+        }
+      }
+    }
   }
 
   async function buscarPaciente(cpf, telefone) {
@@ -255,7 +311,7 @@ function Login({ navigation, route }) {
 
           </View>
 
-          <TouchableOpacity style={styles.btnSubmit} onPress={() => entrar()}>
+          <TouchableOpacity style={styles.btnSubmit} onPress={() => entrar(login, senha)}>
             <Text style={styles.textSubmit}> Acessar </Text>
           </TouchableOpacity>
 

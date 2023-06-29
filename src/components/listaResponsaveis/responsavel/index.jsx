@@ -27,7 +27,7 @@ export default function Responsavel({data}) {
         email:email,
         telefone1: telefone1,
         telefone2: telefone2,
-        imagem: "http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/_lib/file/img/chamado/" + imagem,
+        imagem: "http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/_lib/file/img/chamado/" + imagem,
         idade:idade,
         paciente_crianca: paciente_crianca
     };

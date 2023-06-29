@@ -15,7 +15,7 @@ export default function EditResponsaveis({navigation}) {
     let d = new Date();
     d.setFullYear(d.getFullYear() - 18)
     const {codigoUsuario, setCodigoUsuario, atualizaResp, setAtualizaResp} = useContext(AuthContext)
-    const url = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?AddResponsaveis'
+    const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?AddResponsaveis'
     
     //Variaveis de input para
     const [inputNome,setInputNome] = useState("");
@@ -135,7 +135,7 @@ export default function EditResponsaveis({navigation}) {
     async function sendImage(codMssg){
         let data = image;
         // setLoading(true);
-        var link = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?uploadImageResponsavel';
+        var link = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?uploadImageResponsavel';
         var metodo = 'POST';
         var Autorizacao = 'Authorization';
         let array = data.uri.split('/');

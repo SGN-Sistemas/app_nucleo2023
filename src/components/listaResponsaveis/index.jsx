@@ -12,7 +12,7 @@ export default function Responsaveis({route,navigation}) {
   const [responsaveis,setResponsaveis] = useState(null)
   const {atualizaResp,setAtualizaResp,codigoUsuario, setCodigoUsuario,modalResp, setModalResp} = useContext(AuthContext)
 
-  const url = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?ListResp'
+  const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?ListResp'
 
   useEffect(() => {
 

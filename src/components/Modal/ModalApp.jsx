@@ -1,4 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
+import { AuthContext } from '../../contexts/ContextApi.jsx';
 
 import React, { useState,useContext } from "react";
 
@@ -15,7 +16,7 @@ import {
 import { AntDesign, Feather } from "@expo/vector-icons";
 import * as Linking from 'expo-linking';
 
-import {AuthContext} from '../../contexts/ContextApi';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function ModalAppConfirma({ fechar, texto, textoBotao }) {
   const confirma = () => {
@@ -146,7 +147,7 @@ function ModalEnviaMotivo({ fechar,obj,abrir}) {
 
   const enviarMotivo = async () => {
 
-    await fetch("http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?cancelaAgendamento", {
+    await fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?cancelaAgendamento", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -219,7 +220,7 @@ function ModalAppConfirmaAgendamento({
   abrirAlert
 }) {
   const [accessToken, setAccessToken] = useState()
-
+  const { att, setAtt } = useContext(AuthContext)
   const confirma = async () => {
     await fetch("https://api.ninsaude.com/v1/oauth2/token", {
       method: "POST",
@@ -298,7 +299,30 @@ function ModalAppConfirmaAgendamento({
           }),
           }
         )
-          .then(() => {
+          .then(async () => {
+            const lgn = await AsyncStorage.getItem('login')
+
+            fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?inserirLog", {
+              method: "POST",
+              body: JSON.stringify({
+                'LOAC_ACESSO_APP_ID': idUser,
+                'LOAC_TIPO': 'CONF',
+                'LOAC_PRAZO_12H': 'N',
+                'LOAC_ID_AGENDAMENTO': obj.id,
+                'USER_NAME': lgn,
+              })
+            })
+              .then(() => {
+                console.log('====================================');
+                console.log('inserido');
+                console.log('====================================');
+                setAtt(!att)
+              })
+              .catch(() => {
+                console.log('====================================');
+                console.log('Falha');
+                console.log('====================================');
+              })
             abrirAlert();
           })
           .catch((error) => alert("error: " + error));
@@ -341,7 +365,8 @@ function ModalAppConfirmaAgendamento({
     </View>
   );
 }
-function ModalAlertConf({ modalOpen, modalCovid, textoBotao,texto }){
+function ModalAlertConf({ modalOpen, modalCovid, textoBotao, texto }) {
+  
   const confirma = () => {
     modalOpen();
     modalCovid();
@@ -368,13 +393,193 @@ function ModalAppNaoConfirmaAgendamento({
   dataFormatada,
   horaFormatada,
   clinica,
-  obj,
   abrirAlert
 }) {
-  const [accessToken, setAccessToken] = useState()
+
   
-  console.log(obj.id);
-  
+  // const confirma = async () => {
+  //   await fetch("https://api.ninsaude.com/v1/oauth2/token", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //       "cache-control": "no-cache",
+  //     },
+  //     body: "grant_type=refresh_token&refresh_token=85f138ae6922c4b4101c6eec60ebf53e18f6d342eb1c5c84940a0e0d0fed65c93366e19253ada67819e1e3e15e24a0bf88254e2ce64bcda741cc63c501b51670",
+  //   })
+  //     .then((resp) => resp.json())
+  //     .then((json) => {
+  //       let token = json.access_token;
+  //       fetch(
+  //         "https://api.ninsaude.com/v1/atendimento_agenda/alterar/status/agendamento/" +
+  //           obj.id,
+  //         {
+  //           method: "PUT",
+  //           headers: {
+  //             'Authorization': 'bearer '+token,
+  //             "Content-Type": "application/json",
+  //             "cache-control": "no-cache",
+  //           },
+  //           body: JSON.stringify( {
+  //             "id": obj.id,
+  //             "accountUnidadeId": obj.accountUnidadeId,
+  //             "accountUnidadeUnidade": obj.accountUnidadeUnidade,
+  //             "accountUnidadeDescricao": obj.accountUnidadeDescricao,
+  //             "profissionalId": obj.profissionalId,
+  //             "profissionalNome": obj.profissionalNome,
+  //             "profissionalAgendaCor": obj.profissionalAgendaCor,
+  //             "profissionalAtivo": obj.profissionalAtivo,
+  //             "profissionalFoto": obj.profissionalFoto,
+  //             "data": obj.data,
+  //             "horaInicial": obj.horaInicial,
+  //             "horaFinal": obj.horaFinal,
+  //             "horaChegada": obj.horaChegada,
+  //             "pacienteId":obj.pacienteId,
+  //             "pacienteNome": obj.pacienteNome,
+  //             "pacienteNomeSocial": obj.pacienteNomeSocial,
+  //             "pacienteEmail": obj.pacienteEmail,
+  //             "pacienteDataNascimento": obj.pacienteDataNascimento,
+  //             "pacienteSexo": obj.pacienteSexo,
+  //             "pacienteProfissao": obj.pacienteProfissao,
+  //             "pacienteFoneCelular": obj.pacienteFoneCelular,
+  //             "pacienteFoneComercial": obj.pacienteFoneComercial,
+  //             "pacienteFoneResidencial": obj.pacienteFoneResidencial,
+  //             "pacienteFoto": obj.pacienteFoto,
+  //             "status": 5,
+  //             "convenioId": obj.convenioId,
+  //             "convenioTitulo": obj.convenioTitulo,
+  //             "convenioPlanoId": obj.convenioPlanoId,
+  //             "convenioPlanoDescricao": obj.convenioPlanoDescricao,
+  //             "convenioCarteira": obj.convenioCarteira,
+  //             "convenioValidade": obj.convenioValidade,
+  //             "servicoId": obj.servicoId,
+  //             "servicoDescricao": obj.servicoDescricao,
+  //             "especialidadeId": obj.especialidadeId,
+  //             "especialidadeDescricao": obj.especialidadeDescricao,
+  //             "encaminhadorId": obj.encaminhadorId,
+  //             "encaminhadorNome": obj.encaminhadorNome,
+  //             "salaId": obj.salaId,
+  //             "salaDescricao": obj.salaDescricao,
+  //             "salaAgendaCor": obj.salaAgendaCor,
+  //             "hashRecurso": obj.hashRecurso,
+  //             "acompanhanteNome": obj.acompanhanteNome,
+  //             "acompanhanteTelefone": obj.acompanhanteTelefone,
+  //             "servicoAdicionalId": obj.servicoAdicionalId,
+  //             "tempoEspera": obj.tempoEspera,
+  //             "canceladoProximoAgendamentoData": obj.canceladoProximoAgendamentoData,
+  //             "prontuarioData": obj.prontuarioData,
+  //             "prontuarioDuracao": obj.prontuarioDuracao,
+  //             "prontuarioHoraInicial": obj.prontuarioHoraInicial,
+  //             "prontuarioEncerrado": obj.prontuarioEncerrado,
+  //             "enviadoConfirmacao": obj.enviadoConfirmacao,
+  //         }),
+  //         }
+  //       )
+  //         .then(async () => {
+  //           const lgn = await AsyncStorage.getItem('login')
+
+  //           fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?inserirLog", {
+  //             method: "POST",
+  //             body: JSON.stringify({
+  //               'LOAC_ACESSO_APP_ID': idUser,
+  //               'LOAC_TIPO': 'CANC',
+  //               'LOAC_PRAZO_12H': horarioAlert12H,
+  //               'LOAC_ID_AGENDAMENTO': obj.id,
+  //               'USER_NAME':  lgn,
+  //             })
+  //           })
+  //             .then(() => {
+  //               console.log('====================================');
+  //               console.log('inserido');
+  //               console.log('====================================');
+  //             })
+  //             .catch(() => {
+  //               console.log('====================================');
+  //               console.log('Falha');
+  //               console.log('====================================');
+  //             })
+             
+  //           abrirAlert();
+  //           fechar();
+
+  //         })
+  //         .catch((error) => alert("error: " + error));
+  //     }
+  //     ).catch((error) => alert('error: ' + error));
+  // };
+
+  const close = () => {
+    fechar();
+  };
+
+  return (
+    <View style={styles.containerAgen}>
+      <View style={styles.modalAgen}>
+        <Image
+          style={styles.img}
+          source={require("../../assets/x-button.png")}
+        />
+
+        <Text style={styles.textoAgen}>Cancelar presença?</Text>
+
+        <Text style={styles.textoAgen}>
+          Dia {dataFormatada} ás {horaFormatada}
+        </Text>
+
+        <Text style={styles.texto2Agen}>
+          Endereço: AV PROF MAGALHÃES NETO,N 1450 - SALA 103 PITUBA -
+          SALVADOR/BA
+        </Text>
+
+        <Text style={styles.texto2Agen}>Clínica: {clinica}</Text>
+        <View style={styles.btnAreaNaoConf}>
+          <TouchableOpacity
+            style={styles.containerBotaoAgenNao}
+            onPress={close}
+          >
+            <Text style={styles.textoBotaoAgen}>Não</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.containerBotaoAgenSim}
+            onPress={() => { abrirAlert }}
+          >
+            <Text style={styles.textoBotaoAgen}>Sim</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+}
+function ModalAlertNaoConf({ modalOpen, texto, textoBotao }) {
+  const error = () => {
+    modalOpen();
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.modal}>
+        <Image
+          style={styles.img}
+          source={require("../../assets/x-button.png")}
+        />
+
+        <Text style={styles.texto}>{texto}</Text>
+
+        <TouchableOpacity style={styles.containerBotao} onPress={error}>
+          <Text style={styles.textoBotao}>{textoBotao}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
+function ModalAlertConfCanc({ modalOpen, abrirAlert,obj }) {
+  const fechar = () => {
+    modalOpen();
+  };
+
+  const { horarioAlert12H, idUser,att,setAtt } = useContext(AuthContext)
+
+
   const confirma = async () => {
     await fetch("https://api.ninsaude.com/v1/oauth2/token", {
       method: "POST",
@@ -386,19 +591,18 @@ function ModalAppNaoConfirmaAgendamento({
     })
       .then((resp) => resp.json())
       .then((json) => {
-        setAccessToken(() => json.access_token);
         let token = json.access_token;
         fetch(
           "https://api.ninsaude.com/v1/atendimento_agenda/alterar/status/agendamento/" +
-            obj.id,
+          obj.id,
           {
             method: "PUT",
             headers: {
-              'Authorization': 'bearer '+token,
+              'Authorization': 'bearer ' + token,
               "Content-Type": "application/json",
               "cache-control": "no-cache",
             },
-            body: JSON.stringify( {
+            body: JSON.stringify({
               "id": obj.id,
               "accountUnidadeId": obj.accountUnidadeId,
               "accountUnidadeUnidade": obj.accountUnidadeUnidade,
@@ -412,7 +616,7 @@ function ModalAppNaoConfirmaAgendamento({
               "horaInicial": obj.horaInicial,
               "horaFinal": obj.horaFinal,
               "horaChegada": obj.horaChegada,
-              "pacienteId":obj.pacienteId,
+              "pacienteId": obj.pacienteId,
               "pacienteNome": obj.pacienteNome,
               "pacienteNomeSocial": obj.pacienteNomeSocial,
               "pacienteEmail": obj.pacienteEmail,
@@ -450,63 +654,41 @@ function ModalAppNaoConfirmaAgendamento({
               "prontuarioHoraInicial": obj.prontuarioHoraInicial,
               "prontuarioEncerrado": obj.prontuarioEncerrado,
               "enviadoConfirmacao": obj.enviadoConfirmacao,
-          }),
+            }),
           }
         )
-          .then(() => {
+          .then(async () => {
+            const lgn = await AsyncStorage.getItem('login')
+
+            fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?inserirLog", {
+              method: "POST",
+              body: JSON.stringify({
+                'LOAC_ACESSO_APP_ID': idUser,
+                'LOAC_TIPO': 'CANC',
+                'LOAC_PRAZO_12H': horarioAlert12H,
+                'LOAC_ID_AGENDAMENTO': obj.id,
+                'USER_NAME': lgn,
+              })
+            })
+              .then(() => {
+                console.log('====================================');
+                console.log('inserido');
+                console.log('====================================');
+                setAtt(!att)
+              })
+              .catch(() => {
+                console.log('====================================');
+                console.log('Falha');
+                console.log('====================================');
+              })
+
             abrirAlert();
             fechar();
+
           })
           .catch((error) => alert("error: " + error));
       }
       ).catch((error) => alert('error: ' + error));
-  };
-
-  const close = () => {
-    fechar();
-  };
-
-  return (
-    <View style={styles.containerAgen}>
-      <View style={styles.modalAgen}>
-        <Image
-          style={styles.img}
-          source={require("../../assets/x-button.png")}
-        />
-
-        <Text style={styles.textoAgen}>Cancelar presença?</Text>
-
-        <Text style={styles.textoAgen}>
-          Dia {dataFormatada} ás {horaFormatada}
-        </Text>
-
-        <Text style={styles.texto2Agen}>
-          Endereço: AV PROF MAGALHÃES NETO,N 1450 - SALA 103 PITUBA -
-          SALVADOR/BA
-        </Text>
-
-        <Text style={styles.texto2Agen}>Clínica: {clinica}</Text>
-        <View style={styles.btnAreaNaoConf}>
-          <TouchableOpacity
-            style={styles.containerBotaoAgenNao}
-            onPress={close}
-          >
-            <Text style={styles.textoBotaoAgen}>Não</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.containerBotaoAgenSim}
-            onPress={confirma}
-          >
-            <Text style={styles.textoBotaoAgen}>Sim</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  );
-}
-function ModalAlertNaoConf({ modalOpen, texto, textoBotao }) {
-  const error = () => {
-    modalOpen();
   };
 
   return (
@@ -517,15 +699,20 @@ function ModalAlertNaoConf({ modalOpen, texto, textoBotao }) {
           source={require("../../assets/x-button.png")}
         />
 
-        <Text style={styles.texto}>{texto}</Text>
-
-        <TouchableOpacity style={styles.containerBotao} onPress={error}>
-          <Text style={styles.textoBotao}>{textoBotao}</Text>
-        </TouchableOpacity>
+        <Text style={styles.texto}>Confirmar cancelamento?</Text>
+        <View style={styles.btnAreaNaoConf}>
+          <TouchableOpacity style={styles.containerBotaoAgenSim} onPress={confirma}>
+            <Text style={styles.textoBotao}>Sim</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.containerBotaoAgenNao} onPress={fechar}>
+            <Text style={styles.textoBotao}>Não</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 }
+
 function ModalAlertAtt({ modalOpen, texto, textoBotao,linking }) {
   const error = () => {
     Linking.openURL(linking);
@@ -983,5 +1170,6 @@ export {
   ModalAlertErroResp,
   ModalAlertAtt,
   ModalEnviaMotivo,
-  ModalAlertHorario
+  ModalAlertHorario,
+  ModalAlertConfCanc
 };

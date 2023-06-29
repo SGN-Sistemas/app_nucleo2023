@@ -29,7 +29,7 @@ const onRefresh = useCallback(() => {
 
 function puxaChamados(){
     setLoading(true)
-        fetch('http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamados', {
+        fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamados', {
             method: 'POST',
             body: JSON.stringify({
                 "user" : codPessoa,

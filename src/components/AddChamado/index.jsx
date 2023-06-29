@@ -76,7 +76,7 @@ function Agendamento({ navigation }) {
             setIsModalError(true)
         } else {
 
-            fetch('http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?enviarChamado', {
+            fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?enviarChamado', {
                 method: 'POST',
                 body: JSON.stringify({
                     "priority": num_prioridade,
@@ -132,7 +132,7 @@ function Agendamento({ navigation }) {
     async function sendImage(codMssg) {
         let data = image;
         // setLoading(true);
-        var link = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?uploadImage';
+        var link = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?uploadImage';
         /*var metodo = 'POST';
         var Autorizacao = 'Authorization';
         let array = data.uri.split('/')*/
@@ -182,7 +182,7 @@ function Agendamento({ navigation }) {
 
     function buscaDepartamento(idempresa) {
 
-        let url = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?departamentoEmpresa';
+        let url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?departamentoEmpresa';
 
         fetch(url, {
             method: 'POST',

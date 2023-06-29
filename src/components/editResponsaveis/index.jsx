@@ -12,14 +12,14 @@ import styles from './styles'
 export default function EditResponsaveis({route,navigation}) {
     const [image, setImage] = useState(null);
     const {nome,cpf,email,telefone1,idade,imagem} = route.params.data.Dados;
-    const url_atualiza = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?RespFilt'
+    const url_atualiza = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?RespFilt'
 
 
     const[imagePerfil,setImagePerfil] =  useState();
 
     const dateFormatada =  route.params.dateFormatada
     const [dtformatada,setDtFormatada] = useState(`${dateFormatada}`);
-    const url = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?EditResp'
+    const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?EditResp'
     //Variaveis de input para
     const [inputNome,setInputNome] = useState();
     const [date,setDate] = useState();
@@ -111,8 +111,8 @@ export default function EditResponsaveis({route,navigation}) {
             }else{
                 setCheckBox(false)
             }
-            //setImage("http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/_lib/file/img/chamado/" + json[0].foto)
-            setImagePerfil("http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/_lib/file/img/chamado/" + json[0].foto)
+            //setImage("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/_lib/file/img/chamado/" + json[0].foto)
+            setImagePerfil("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/_lib/file/img/chamado/" + json[0].foto)
            
           })
 
@@ -137,7 +137,7 @@ export default function EditResponsaveis({route,navigation}) {
     async function sendImage(codMssg){
         let data = image;
         // setLoading(true);
-        var link = 'http://sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?EditarImagemResp';
+        var link = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?EditarImagemResp';
         var metodo = 'POST';
         var Autorizacao = 'Authorization';
         let array = data.uri.split('/');
