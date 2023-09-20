@@ -73,7 +73,37 @@ const styles = StyleSheet.create({
   modalContainer: {
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },inputSenha: {
+    width: '85%',
+    height: 50,
+    padding: 10,
+    color: '#222',
+    fontSize: 17
+  },
+  inputAreaSenha: {
+    flexDirection: 'row',
+    width: '94%',
+    backgroundColor: '#fff',
+    marginBottom: 15,
+    borderRadius: 7,
+    height: 56,
+    alignItems: 'center',
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27
+  },
+  iconSenha: {
+    width: '15%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
 
 })
 export default styles

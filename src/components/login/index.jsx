@@ -1,21 +1,35 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { Ionicons } from '@expo/vector-icons'
+import React, { useEffect, useState, useContext } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
-  View, Text, TextInput, StyleSheet, ImageBackground, KeyboardAvoidingView, Image,
-  TouchableOpacity, Modal, Platform, BackHandler, Alert
-} from 'react-native'
-import styles from './styles';
-import { ModalAppConfirma, ModalAppErro, ModalAlertAtt } from '../Modal/ModalApp'
-import { AuthContext } from '../../contexts/ContextApi'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import * as LocalAuthentication from 'expo-local-authentication'
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Image,
+  TouchableOpacity,
+  Modal,
+  Platform,
+  BackHandler,
+  Alert,
+} from "react-native";
+import styles from "./styles";
+import {
+  ModalAppConfirma,
+  ModalAppErro,
+  ModalAlertAtt,
+} from "../Modal/ModalApp";
+import { AuthContext } from "../../contexts/ContextApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as LocalAuthentication from "expo-local-authentication";
+import { url } from "../../utils/url";
+import { CheckBox } from "../checkBoxTermo";
 
-//sgnsistemas.ddns.net:65531/sgn_lgpd_nucleo
-//192.168.102.205
 function Login({ navigation, route }) {
-  const [login, setLogin] = useState('')
-  const [senha, setSenha] = useState('')
-  const [hidePass, setHidePass] = useState(true)
+  const [login, setLogin] = useState("");
+  const [senha, setSenha] = useState("");
+  const [hidePass, setHidePass] = useState(true);
   const [user, setUser] = useState();
   const [isModalConfirm, setIsModalConfirm] = useState(false);
   const [isModalError, setIsModalError] = useState(false);
@@ -23,86 +37,82 @@ function Login({ navigation, route }) {
   const [modalAtt, setModalAtt] = useState(false);
   const [versao, setVersao] = useState(0);
   const [linking, setLinking] = useState("");
-  const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?login'
-  const urlIdEnvia = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?EnviaCodigo';
-  const { idUser, setIdUser, codPessoa, setCodPessoa, idEmpresa, setIdEmpresa, codigoUsuario, setCodigoUsuario } = useContext(AuthContext)
-
+  const [nameIcon, setNameIcon] = useState(false);
+  const [termoAceito, setTermAceito] = useState(false);
+  const [tradePassword, setTradePassword] = useState(false);
+  const {
+    idUser,
+    setIdUser,
+    codPessoa,
+    setCodPessoa,
+    idEmpresa,
+    setIdEmpresa,
+    codigoUsuario,
+    setCodigoUsuario,
+  } = useContext(AuthContext);
+  const [textErr, setTextErr] = useState("");
+  const [list, setList] = useState([]);
   const storeData = async (login, password) => {
     try {
-      await AsyncStorage.setItem('login', login)
-      await AsyncStorage.setItem('password', password)
+      await AsyncStorage.setItem("password", password);
+      await AsyncStorage.setItem("login", login);
+      await AsyncStorage.setItem("termAccept", "true");
     } catch (e) {
-      alert('Error ' + e)
+      alert("Error " + e);
     }
-  }
+  };
 
   useEffect(() => {
-    (
-      async () => {
-        biometricLogin()
-        const pws = await AsyncStorage.getItem('password')
-        setSenha(pws)
-        const lgn = await AsyncStorage.getItem('login')
-        setLogin(lgn)
-        
-      }
-    )()
-
-  }, [])
+    (async () => {
+      biometricLogin();
+      const lgn = await AsyncStorage.getItem("login");
+      setLogin(lgn);
+    })();
+  }, []);
 
   function irRecuperarSenha() {
-    var e;
-    if (login !== null) {
-      e = login;
-    } else {
-      e = '';
-    }
-    navigation.navigate('RecuperarSenha', { email: e });
+    navigation.navigate("RecuperarSenha");
   }
   const sairConf = () => {
-    setIsModalConfirm(false)
-  }
+    setIsModalConfirm(false);
+  };
 
   const sairError = () => {
-    setIsModalError(false)
-  }
+    setIsModalError(false);
+  };
   if (versao == 0) {
     versaoVerificar();
-    console.log("att")
   }
   function versaoVerificar() {
     verficarVersao();
     setVersao(1);
   }
   function verficarVersao() {
-    let numberVersion = '';
-    let platform = '';
-    if (Platform.OS == 'android') {
-      numberVersion = 23;
+    let numberVersion = "";
+    let platform = "";
+    if (Platform.OS == "android") {
+      numberVersion = 29;
       platform = "android";
-    } else if (Platform.OS == 'ios') {
-      numberVersion = 12;
+    } else if (Platform.OS == "ios") {
+      numberVersion = 18;
       platform = "ios";
     }
-    fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?verificarVersaoApp", {
+
+    fetch(url + "verificarVersaoApp", {
       method: "POST",
       body: JSON.stringify({
-        'numberVersion': numberVersion,
-        'platform': platform,
-      })
-    }).
-      then((resp) => resp.json()).
-      then((json) => {
+        numberVersion: numberVersion,
+        platform: platform,
+      }),
+    })
+      .then((resp) => resp.json())
+      .then((json) => {
         if (json.atualizacao == 1) {
           setLinking(json.link);
           openModalAtt();
-        } else {
-          console.log("Atualizado")
         }
-
-      }).catch((e) => {
-        console.log(e);
       })
+      .catch((e) => {});
   }
 
   function openModalAtt() {
@@ -121,104 +131,140 @@ function Login({ navigation, route }) {
     }
   }
 
-  function entrar(login,senha) {
-
-    if (login == '' || senha == '') {
-      setIsModalError(true)
+  const termVerification = async () => {
+    const termAccept = await AsyncStorage.getItem("termAccept");
+    if (termAccept === "true") {
+      setTermAceito(true);
     } else {
+      setTermAceito(false);
+    }
+  };
 
+  useEffect(() => {
+    (async () => {
+      await termVerification();
+    })();
+  }, []);
+
+  function entrar(login, senha, termoAceito) {
+    var pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,}$/;
+    if (!termoAceito) {
+      if (!nameIcon) {
+        setTextErr("Aceite o termo");
+        setIsModalError(true);
+        return;
+      }
+    }
+    if (login == "" || senha == "") {
+      setTextErr("Preencha todos os campos");
+      setIsModalError(true);
+    } else {
+      if (!pattern.test(senha)) {
+        setTextErr(
+          "Informamos que a nossa política de segurança foi atualizada, sua nova senha deve conter no mínimo 8 dígitos, uma letra maiúscula, um caractere especial (Ex: @#$%), um número e uma letra minúscula"
+        );
+        setTradePassword(true);
+        setIsModalError(true);
+        return;
+      }
       const data = new Date();
 
-      console.log(data);
-
-      fetch(url, {
-        method: 'POST',
+      fetch(url + "login", {
+        method: "POST",
         body: JSON.stringify({
-          "login": login,
-          "pswd": senha,
-          "data": data,
-          "ip": "192.168.1.119"
-        })
+          login: login,
+          pswd: senha,
+          data: data,
+          ip: "192.168.1.119",
+        }),
       })
         .then((resp) => {
-
-          return resp.json()
-
+          return resp.json();
         })
         .then((json) => {
           if (json.error) {
-            openModalBlock()
+            openModalBlock();
           } else {
             setCodPessoa(json.cod_pessoa);
             setIdEmpresa(json.idempresa);
-            setCodigoUsuario(json.codigo_usuario)
+            setCodigoUsuario(json.codigo_usuario);
 
             if (json.id != "" && json.id != 0) {
               setIdUser(json.id);
-              storeData(login, senha)
-              navigation.navigate('Home')
+              storeData(login, senha);
+              navigation.navigate("Home");
             } else {
               buscarPaciente(json.cpf, json.telefone);
             }
-
-            //navigation.navigate('Home')
           }
         })
-        .catch((error) => alert('error: ' + error))
+        .catch((error) => {
+          alert("3: " + url + "login " + error);
+          console.log("====================================");
+          console.log(error);
+          console.log("====================================");
+        });
     }
-
   }
 
   const biometricLogin = async () => {
-    const compatible = await LocalAuthentication.hasHardwareAsync()
+    const compatible = await LocalAuthentication.hasHardwareAsync();
 
-    const savedBiometrics = await LocalAuthentication.isEnrolledAsync()
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+    const termAccept = await AsyncStorage.getItem("termAccept");
+    const termoAceite = termAccept === "true";
 
-    const valuePassword = await AsyncStorage.getItem('password')
-    const valueUSER = await AsyncStorage.getItem('login')
+    const valuePassword = await AsyncStorage.getItem("password");
+    const valueUSER = await AsyncStorage.getItem("login");
 
     if (valuePassword !== null && valueUSER !== null) {
       if (compatible) {
         if (savedBiometrics) {
           const validAuth = await LocalAuthentication.authenticateAsync({
-            promptMessage: 'Login com biometria'
-          })
+            promptMessage: "Login com biometria",
+          });
 
           if (validAuth.success) {
-            entrar(valueUSER, valuePassword)
+            entrar(valueUSER, valuePassword, termoAceite);
           } else {
             try {
-              await AsyncStorage.setItem('password', '')
+              await AsyncStorage.setItem("password", "");
             } catch (e) {
-              alert('Error ' + e)
+              alert("Error " + e);
             }
           }
         }
       }
     }
-  }
+  };
 
   async function buscarPaciente(cpf, telefone) {
-
-    await fetch('https://api.ninsaude.com/v1/oauth2/token', {
-      method: 'POST',
+    await fetch("https://api.ninsaude.com/v1/oauth2/token", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'cache-control': 'no-cache'
+        "Content-Type": "application/x-www-form-urlencoded",
+        "cache-control": "no-cache",
       },
-      body: 'grant_type=refresh_token&refresh_token=' + route.params.refresh_token
+      body:
+        "grant_type=refresh_token&refresh_token=" + route.params.refresh_token,
     })
       .then((resp) => resp.json())
       .then(async (json) => {
         let access_token = json.access_token;
 
-        await fetch('https://api.ninsaude.com/v1/cadastro_paciente/listar?cpf=' + cpf + '&foneCelular=' + telefone, {
-          headers: {
-            'Authorization': 'bearer ' + access_token,
-            'Cache-Control': 'no-cache',
-            'Content-Type': 'application/json'
+        await fetch(
+          "https://api.ninsaude.com/v1/cadastro_paciente/listar?cpf=" +
+            cpf +
+            "&foneCelular=" +
+            telefone,
+          {
+            headers: {
+              Authorization: "bearer " + access_token,
+              "Cache-Control": "no-cache",
+              "Content-Type": "application/json",
+            },
           }
-        })
+        )
           .then((resp) => resp.json())
           .then((json) => {
             var result = json.result[0];
@@ -229,41 +275,47 @@ function Login({ navigation, route }) {
               let idUsuario = result.id;
               setIdUser(idUsuario);
               enviarId(idUsuario, cpf, telefone);
-              navigation.navigate('Home');
+              navigation.navigate("Home");
             } else {
-              alert('Não existe esse paciente no nosso sistema!');
+              alert("Não existe esse paciente no nosso sistema!");
             }
           })
-          .catch((error) => alert('error: ' + error))
-      })
-
+          .catch((error) =>
+            alert(
+              "Apolo: https://api.ninsaude.com/v1/cadastro_paciente/listar?cpf=" +
+                cpf +
+                "&foneCelular=" +
+                telefone
+            )
+          );
+      });
   }
 
   const enviarId = (id, cpf, telefone) => {
-    fetch(urlIdEnvia, {
-      method: 'POST',
+    fetch(url + "EnviaCodigo", {
+      method: "POST",
       body: JSON.stringify({
-        "id": id,
-        "cpf": cpf,
-        "telefone": telefone
-      })
-    }).then((resp) => resp.json())
-      .then((json) => {
-        console.log(json);
-      }).catch(error => console.log(error));
-  }
+        id: id,
+        cpf: cpf,
+        telefone: telefone,
+      }),
+    })
+      .then((resp) => resp.json())
+      .then((json) => {})
+      .catch((error) => {});
+  };
 
   const backAction = () => {
     Alert.alert("Atenção!", "Tem certeza que deseja sair?", [
       {
         text: "Cancelar",
         onPress: () => null,
-        style: "cancel"
+        style: "cancel",
       },
       {
         text: "SIM",
-        onPress: () => BackHandler.exitApp()
-      }
+        onPress: () => BackHandler.exitApp(),
+      },
     ]);
     return true;
   };
@@ -276,60 +328,94 @@ function Login({ navigation, route }) {
   }, []);
 
   return (
-
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-
-      <ImageBackground source={require('../../assets/lgpd_protecao_dados.png')}
-        resizeMode="cover" style={styles.image}>
-
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}>
+      <ImageBackground
+        source={require("../../assets/lgpd_protecao_dados.png")}
+        resizeMode="cover"
+        style={styles.image}>
         <View style={styles.containerImagem}>
           <Image
             style={styles.imageLogo}
-            source={require('../../assets/incentivarLogo.png')}
+            source={require("../../assets/incentivarLogo.png")}
           />
         </View>
 
         <View style={styles.containerForm}>
-
-          <TextInput style={styles.input} placeholder='Login'
-            autoCorrect={false} value={login} onChangeText={(text) => setLogin(text)} />
-
+          <TextInput
+            style={styles.input}
+            placeholder="Login"
+            autoCorrect={false}
+            value={login}
+            onChangeText={(text) => setLogin(text)}
+          />
 
           <View style={styles.inputAreaSenha}>
+            <TextInput
+              style={styles.inputSenha}
+              secureTextEntry={hidePass}
+              placeholder="Senha"
+              autoCorrect={false}
+              value={senha}
+              onChangeText={(text) => setSenha(text)}
+            />
 
-            <TextInput style={styles.inputSenha}
-              secureTextEntry={hidePass} placeholder='Senha'
-              autoCorrect={false} value={senha} onChangeText={(text) => setSenha(text)} />
-
-            <TouchableOpacity style={styles.iconSenha}
+            <TouchableOpacity
+              style={styles.iconSenha}
               onPress={() => setHidePass(!hidePass)}>
-              {
-                hidePass ? <Ionicons name='eye' size={25} />
-                  : <Ionicons name='eye-off' size={25} />
-              }
+              {hidePass ? (
+                <Ionicons name="eye" size={25} />
+              ) : (
+                <Ionicons name="eye-off" size={25} />
+              )}
             </TouchableOpacity>
-
           </View>
-
-          <TouchableOpacity style={styles.btnSubmit} onPress={() => entrar(login, senha)}>
+          {!termoAceito ? (
+            <CheckBox nameIcon={nameIcon} setNameIcon={setNameIcon} />
+          ) : (
+            <></>
+          )}
+          <TouchableOpacity
+            style={styles.btnSubmit}
+            onPress={() => entrar(login, senha, termoAceito)}>
             <Text style={styles.textSubmit}> Acessar </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnRegister} onPress={irRecuperarSenha}>
+          <TouchableOpacity
+            style={styles.btnRegister}
+            onPress={irRecuperarSenha}>
             <Text style={styles.textRegister}> Recuperar Senha </Text>
           </TouchableOpacity>
 
-          <Modal transparent={true} animationType="fadeIn" visible={isModalConfirm}>
+          <Modal
+            transparent={true}
+            animationType="fadeIn"
+            visible={isModalConfirm}>
             <View style={styles.modalContainer}>
-              <ModalAppConfirma fechar={() => sairConf()}
-                texto="Login efetuado com sucesso" textoBotao="OK" />
+              <ModalAppConfirma
+                fechar={() => sairConf()}
+                texto="Login efetuado com sucesso"
+                textoBotao="OK"
+              />
             </View>
           </Modal>
 
-          <Modal transparent={true} animationType="fadeIn" visible={isModalError} >
+          <Modal
+            transparent={true}
+            animationType="fadeIn"
+            visible={isModalError}>
             <View style={styles.modalContainer}>
-              <ModalAppErro fechar={() => sairError()}
-                texto="Preencha todos os campos!" textoBotao="OK" />
+              <ModalAppErro
+                fechar={() => {
+                  sairError();
+                  if (tradePassword) {
+                    navigation.navigate("RecuperarSenha");
+                  }
+                }}
+                texto={textErr}
+                textoBotao="OK"
+              />
             </View>
           </Modal>
 
@@ -344,7 +430,7 @@ function Login({ navigation, route }) {
             </View>
           </Modal>
 
-          <Modal transparent={true} animationType="fadeIn" visible={modalBlock} >
+          <Modal transparent={true} animationType="fadeIn" visible={modalBlock}>
             <View style={styles.modalContainer}>
               <ModalAppErro
                 fechar={() => openModalBlock()}
@@ -353,14 +439,10 @@ function Login({ navigation, route }) {
               />
             </View>
           </Modal>
-
         </View>
-
       </ImageBackground>
-
     </KeyboardAvoidingView>
-
-  )
+  );
 }
 
-export default Login
+export default Login;

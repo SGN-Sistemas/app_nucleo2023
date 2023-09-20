@@ -9,6 +9,7 @@ import {
   FlatList,
 } from "react-native";
 import styles from './styles'
+import { urlImage } from "../../utils/url";
 
 export default function FlatListItem({ item }) {
   let mensagem = replaceHtml(item.conteudo)
@@ -42,7 +43,7 @@ export default function FlatListItem({ item }) {
         <Image
         style={styles.image}
         source={{
-          uri: 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/_lib/file/img/chamado/'+item.arquivo,
+          uri: urlImage + "" +item.arquivo,
         }}
       />
       :

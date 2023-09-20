@@ -4,6 +4,7 @@ import { EvilIcons  } from '@expo/vector-icons';
 import { AuthContext } from '../../contexts/ContextApi';
 import { ModalAlertConf,ModalAlertNaoConf } from "../Modal/ModalApp";
 import styles from './styles'
+import { url, urlImage } from '../../utils/url';
 export default function PerfilResponsaveis({route,navigation}) {
     //const {nome,cpf,email,telefone1,imagem,idade, id} = route.params.Dados;
 
@@ -23,9 +24,7 @@ export default function PerfilResponsaveis({route,navigation}) {
     //const [imagem, setImagem] = useState(route.params.Dados.imagem)
 
    
-    //let dadosInfo = {nome,cpf,email,telefone1,idade,id,imagem, pacienteCrianca}
-
-    const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?DeleteResp';
+    //let dadosInfo = {nome,cpf,email,telefone1,idade,id,imagem,
 
     const {atualizaResp, setAtualizaResp,codigoUsuario,modalResp, setModalResp} = useContext(AuthContext)
     const array = idade.split('-');
@@ -42,13 +41,9 @@ export default function PerfilResponsaveis({route,navigation}) {
     let textoEmailFormat = "";
     let TextoRespIndi = "";
     const [textRespLegal,setTextRespLegal] = useState();
-    const url_atualiza = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?RespFilt'
-
-    console.log(id);
 
     useEffect(() => {
-
-        fetch(url_atualiza,{
+        fetch(url + 'RespFilt',{
             method: 'post',
             body: JSON.stringify({"paciente": ""+codigoUsuario, "cod_resp" : ""+ id})
           })
@@ -59,7 +54,7 @@ export default function PerfilResponsaveis({route,navigation}) {
             setTelefone1(json[0].telefone1);
             setEmail(json[0].email);
             setCpf(json[0].cpf);
-            setImagem('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/_lib/file/img/chamado/'+json[0].foto);
+            setImagem(urlImage + "" +json[0].foto);
             setPacienteCrianca(json[0].paciente_crianca);
             setTelefone2(json[0].telefone2);
             setTextRespLegal(json[0].resp_legal ==  1);
@@ -110,7 +105,7 @@ export default function PerfilResponsaveis({route,navigation}) {
 
     function deletarResponsavel(){
         //alert("Registro deletado!")
-        fetch(url,{
+        fetch(url + 'DeleteResp',{
             method: 'post',
             body: JSON.stringify({
                  'id'   :   id
@@ -118,7 +113,7 @@ export default function PerfilResponsaveis({route,navigation}) {
             })
             .then((resp) => resp.json())
             .then((json) => {
-                setAtualizaResp( atualizaResp + 1)
+                setAtualizaResp(!atualizaResp)
 
                 setModalResp(true);
                 navigation.goBack();

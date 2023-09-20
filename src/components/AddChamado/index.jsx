@@ -5,6 +5,7 @@ import { ModalAppConfirma, ModalAppErro, ModalPickerDep, ModalPickerPrio } from 
 import * as ImagePicker from 'expo-image-picker';
 import { AuthContext } from '../../contexts/ContextApi.jsx';
 import styles from './styles'
+import { url } from '../../utils/url';
 
 function Agendamento({ navigation }) {
 
@@ -76,7 +77,7 @@ function Agendamento({ navigation }) {
             setIsModalError(true)
         } else {
 
-            fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?enviarChamado', {
+            fetch(url + 'enviarChamado', {
                 method: 'POST',
                 body: JSON.stringify({
                     "priority": num_prioridade,
@@ -132,7 +133,7 @@ function Agendamento({ navigation }) {
     async function sendImage(codMssg) {
         let data = image;
         // setLoading(true);
-        var link = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?uploadImage';
+        var link = url + 'uploadImage';
         /*var metodo = 'POST';
         var Autorizacao = 'Authorization';
         let array = data.uri.split('/')*/
@@ -182,9 +183,7 @@ function Agendamento({ navigation }) {
 
     function buscaDepartamento(idempresa) {
 
-        let url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?departamentoEmpresa';
-
-        fetch(url, {
+        fetch(url +'departamentoEmpresa', {
             method: 'POST',
             body: JSON.stringify({
                 "idempresa": idempresa

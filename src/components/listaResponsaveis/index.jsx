@@ -1,43 +1,33 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, Image, StyleSheet,FlatList,TouchableOpacity,Modal } from "react-native";
+import { View, Text, Image, ActivityIndicator,FlatList,TouchableOpacity,Modal } from "react-native";
 import { Ionicons } from '@expo/vector-icons'; 
 import { ModalAlertConf } from "../Modal/ModalApp";
 import styles from './styles'
 import Responsavel from "./responsavel";
 import { AuthContext } from '../../contexts/ContextApi';
+import { url } from "../../utils/url";
 
 
 export default function Responsaveis({route,navigation}) {
 
   const [responsaveis,setResponsaveis] = useState(null)
+  const [loading, setLoading] = useState()
   const {atualizaResp,setAtualizaResp,codigoUsuario, setCodigoUsuario,modalResp, setModalResp} = useContext(AuthContext)
 
-  const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?ListResp'
-
   useEffect(() => {
-
-      fetch(url,{
-        method: 'post',
-        body: JSON.stringify({"paciente":"" + codigoUsuario})
-      })
-      .then((resp) => resp.json())
-      .then((json) => {
-
-        //responsaveis.push(...json)
-        setResponsaveis(json)
-      })
-
-  },[])
-
-  useEffect(() => {
-
-    fetch(url,{
+    
+    fetch(url + "ListResp",{
       method: 'post',
       body: JSON.stringify({"paciente": ""+codigoUsuario})
     })
     .then((resp) => resp.json())
     .then((json) => {
       let result = json;
+      setLoading(false)
+      if(result === "Sem registros no banco de dados!"){
+        setResponsaveis(result);
+        return
+      }
       var resp =
         result.filter((element) => {
           var resp_status = element.resp_status;
@@ -45,10 +35,8 @@ export default function Responsaveis({route,navigation}) {
             return true;
           }
         })
-        console.log(resp);
       setResponsaveis(resp);
     })
-
 },[atualizaResp])
 
   
@@ -69,9 +57,14 @@ export default function Responsaveis({route,navigation}) {
     
     <Responsavel data={item}/>
   );
-  if(responsaveis != "Sem registros no banco de dados!" && responsaveis != []){
+  if(loading){
+    return (
+      <ActivityIndicator size="large" />
+    )
+  }else if(responsaveis != "Sem registros no banco de dados!"){
     return ( 
         <View style={styles.container}>
+          
           <FlatList
             style={{paddingLeft: 20,paddingRight: 20}}
             data={responsaveis}
@@ -94,19 +87,11 @@ export default function Responsaveis({route,navigation}) {
         </View>
       );
     
-  }else{
+  }else{ 
     return(
       <View style={styles.container}>
-        <Modal transparent={true} animationType="fadeIn" visible={modalResp}>
-          <View style={styles.modalContainer}>
-            <ModalAlertConf
-              modalOpen={()=>openModalAlertConf()}
-              modalCovid={() => {}}
-              textoBotao="OK"
-              texto="Responsavel excluido com sucesso"
-            />
-          </View>
-        </Modal> 
+
+        <Text style={{color: "#121212",fontSize: 20,top: "50%", marginLeft: "auto", marginRight: "auto"}}>Sem dados para serem exibidos</Text>
         <TouchableOpacity style={styles.iconAdd} onPress={() => navigation.navigate('AddResponsavel')}>
           <Ionicons name="add-circle" size={45} color="#01A78F" />
         </TouchableOpacity>

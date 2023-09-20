@@ -4,7 +4,6 @@ import styles from './styles'
 export default function historico_horario_components({ data }) {
     const datas = data.data;
     const dataSplit = datas.split("-");
-    console.log(dataSplit);
     const dataFormatada = dataSplit[2] + "/" + dataSplit[1] + "/" + dataSplit[0];
     const horaFormat = data.horaInicial.toString() + " ás " + data.horaFinal.toString();
     const profissionalNome = data.profissionalNome.toString();

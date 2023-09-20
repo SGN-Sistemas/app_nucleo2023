@@ -56,12 +56,10 @@ export default function HistoricoHorario() {
                     .then((resp) => resp.json())
                     .then((json) => {
                         let result = json.result;
-                        console.log("id: " + idUser);
                         for (let i = 0; i < result.length; i++) {
                             horarios.push(result[i]);
                         }
                         setHorariosT(horarios)
-                        console.log(horariosT);
                         setLoading(false);
 
                     }

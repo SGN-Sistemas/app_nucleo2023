@@ -51,8 +51,6 @@ export default function HorarioComponent(props) {
  
     const especialidadeDescricao = props.data.especialidadeDescricao
 
-    console.log( props.data.profissionalNome)
-
     let salaDescricao = "";
     const salaDescricaoValid = props.data.salaDescricao;
     const especialidadeDesc = () =>{

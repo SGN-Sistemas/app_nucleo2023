@@ -17,6 +17,7 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 import * as Linking from 'expo-linking';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { url } from "../../utils/url.js";
 
 function ModalAppConfirma({ fechar, texto, textoBotao }) {
   const confirma = () => {
@@ -147,7 +148,7 @@ function ModalEnviaMotivo({ fechar,obj,abrir}) {
 
   const enviarMotivo = async () => {
 
-    await fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?cancelaAgendamento", {
+    await fetch( url + "cancelaAgendamento", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -162,8 +163,6 @@ function ModalEnviaMotivo({ fechar,obj,abrir}) {
     })
     .then((response)=>{
 
-      console.log("Click");
-
       response.json();
       
     })
@@ -173,12 +172,8 @@ function ModalEnviaMotivo({ fechar,obj,abrir}) {
 
       abrirAlert();
 
-      console.log(resp);
-
     })
     .catch((error)=>{
-
-      console.log(error);
 
     })
 
@@ -302,7 +297,7 @@ function ModalAppConfirmaAgendamento({
           .then(async () => {
             const lgn = await AsyncStorage.getItem('login')
 
-            fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?inserirLog", {
+            fetch(url + "inserirLog", {
               method: "POST",
               body: JSON.stringify({
                 'LOAC_ACESSO_APP_ID': idUser,
@@ -313,15 +308,9 @@ function ModalAppConfirmaAgendamento({
               })
             })
               .then(() => {
-                console.log('====================================');
-                console.log('inserido');
-                console.log('====================================');
                 setAtt(!att)
               })
               .catch(() => {
-                console.log('====================================');
-                console.log('Falha');
-                console.log('====================================');
               })
             abrirAlert();
           })
@@ -395,117 +384,6 @@ function ModalAppNaoConfirmaAgendamento({
   clinica,
   abrirAlert
 }) {
-
-  
-  // const confirma = async () => {
-  //   await fetch("https://api.ninsaude.com/v1/oauth2/token", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/x-www-form-urlencoded",
-  //       "cache-control": "no-cache",
-  //     },
-  //     body: "grant_type=refresh_token&refresh_token=85f138ae6922c4b4101c6eec60ebf53e18f6d342eb1c5c84940a0e0d0fed65c93366e19253ada67819e1e3e15e24a0bf88254e2ce64bcda741cc63c501b51670",
-  //   })
-  //     .then((resp) => resp.json())
-  //     .then((json) => {
-  //       let token = json.access_token;
-  //       fetch(
-  //         "https://api.ninsaude.com/v1/atendimento_agenda/alterar/status/agendamento/" +
-  //           obj.id,
-  //         {
-  //           method: "PUT",
-  //           headers: {
-  //             'Authorization': 'bearer '+token,
-  //             "Content-Type": "application/json",
-  //             "cache-control": "no-cache",
-  //           },
-  //           body: JSON.stringify( {
-  //             "id": obj.id,
-  //             "accountUnidadeId": obj.accountUnidadeId,
-  //             "accountUnidadeUnidade": obj.accountUnidadeUnidade,
-  //             "accountUnidadeDescricao": obj.accountUnidadeDescricao,
-  //             "profissionalId": obj.profissionalId,
-  //             "profissionalNome": obj.profissionalNome,
-  //             "profissionalAgendaCor": obj.profissionalAgendaCor,
-  //             "profissionalAtivo": obj.profissionalAtivo,
-  //             "profissionalFoto": obj.profissionalFoto,
-  //             "data": obj.data,
-  //             "horaInicial": obj.horaInicial,
-  //             "horaFinal": obj.horaFinal,
-  //             "horaChegada": obj.horaChegada,
-  //             "pacienteId":obj.pacienteId,
-  //             "pacienteNome": obj.pacienteNome,
-  //             "pacienteNomeSocial": obj.pacienteNomeSocial,
-  //             "pacienteEmail": obj.pacienteEmail,
-  //             "pacienteDataNascimento": obj.pacienteDataNascimento,
-  //             "pacienteSexo": obj.pacienteSexo,
-  //             "pacienteProfissao": obj.pacienteProfissao,
-  //             "pacienteFoneCelular": obj.pacienteFoneCelular,
-  //             "pacienteFoneComercial": obj.pacienteFoneComercial,
-  //             "pacienteFoneResidencial": obj.pacienteFoneResidencial,
-  //             "pacienteFoto": obj.pacienteFoto,
-  //             "status": 5,
-  //             "convenioId": obj.convenioId,
-  //             "convenioTitulo": obj.convenioTitulo,
-  //             "convenioPlanoId": obj.convenioPlanoId,
-  //             "convenioPlanoDescricao": obj.convenioPlanoDescricao,
-  //             "convenioCarteira": obj.convenioCarteira,
-  //             "convenioValidade": obj.convenioValidade,
-  //             "servicoId": obj.servicoId,
-  //             "servicoDescricao": obj.servicoDescricao,
-  //             "especialidadeId": obj.especialidadeId,
-  //             "especialidadeDescricao": obj.especialidadeDescricao,
-  //             "encaminhadorId": obj.encaminhadorId,
-  //             "encaminhadorNome": obj.encaminhadorNome,
-  //             "salaId": obj.salaId,
-  //             "salaDescricao": obj.salaDescricao,
-  //             "salaAgendaCor": obj.salaAgendaCor,
-  //             "hashRecurso": obj.hashRecurso,
-  //             "acompanhanteNome": obj.acompanhanteNome,
-  //             "acompanhanteTelefone": obj.acompanhanteTelefone,
-  //             "servicoAdicionalId": obj.servicoAdicionalId,
-  //             "tempoEspera": obj.tempoEspera,
-  //             "canceladoProximoAgendamentoData": obj.canceladoProximoAgendamentoData,
-  //             "prontuarioData": obj.prontuarioData,
-  //             "prontuarioDuracao": obj.prontuarioDuracao,
-  //             "prontuarioHoraInicial": obj.prontuarioHoraInicial,
-  //             "prontuarioEncerrado": obj.prontuarioEncerrado,
-  //             "enviadoConfirmacao": obj.enviadoConfirmacao,
-  //         }),
-  //         }
-  //       )
-  //         .then(async () => {
-  //           const lgn = await AsyncStorage.getItem('login')
-
-  //           fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?inserirLog", {
-  //             method: "POST",
-  //             body: JSON.stringify({
-  //               'LOAC_ACESSO_APP_ID': idUser,
-  //               'LOAC_TIPO': 'CANC',
-  //               'LOAC_PRAZO_12H': horarioAlert12H,
-  //               'LOAC_ID_AGENDAMENTO': obj.id,
-  //               'USER_NAME':  lgn,
-  //             })
-  //           })
-  //             .then(() => {
-  //               console.log('====================================');
-  //               console.log('inserido');
-  //               console.log('====================================');
-  //             })
-  //             .catch(() => {
-  //               console.log('====================================');
-  //               console.log('Falha');
-  //               console.log('====================================');
-  //             })
-             
-  //           abrirAlert();
-  //           fechar();
-
-  //         })
-  //         .catch((error) => alert("error: " + error));
-  //     }
-  //     ).catch((error) => alert('error: ' + error));
-  // };
 
   const close = () => {
     fechar();
@@ -660,7 +538,7 @@ function ModalAlertConfCanc({ modalOpen, abrirAlert,obj }) {
           .then(async () => {
             const lgn = await AsyncStorage.getItem('login')
 
-            fetch("http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?inserirLog", {
+            fetch( url+"inserirLog", {
               method: "POST",
               body: JSON.stringify({
                 'LOAC_ACESSO_APP_ID': idUser,
@@ -671,15 +549,9 @@ function ModalAlertConfCanc({ modalOpen, abrirAlert,obj }) {
               })
             })
               .then(() => {
-                console.log('====================================');
-                console.log('inserido');
-                console.log('====================================');
                 setAtt(!att)
               })
               .catch(() => {
-                console.log('====================================');
-                console.log('Falha');
-                console.log('====================================');
               })
 
             abrirAlert();
@@ -924,7 +796,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "80%",
-    height: "60%",
+    minHeight: "60%",
+    height: "auto",
     backgroundColor: "white",
     padding: 6,
     borderRadius: 10,

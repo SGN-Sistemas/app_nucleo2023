@@ -8,6 +8,7 @@ import { TextInputMask } from 'react-native-masked-text';
 import { ModalAlertConf,ModalAlertNaoConf,ModalAlertErroResp } from "../Modal/ModalApp";
 import Icon from 'react-native-vector-icons/AntDesign';
 import styles from './styles';
+import { url } from '../../utils/url';
 
 export default function EditResponsaveis({navigation}) {
     const [image, setImage] = useState(null);
@@ -15,7 +16,6 @@ export default function EditResponsaveis({navigation}) {
     let d = new Date();
     d.setFullYear(d.getFullYear() - 18)
     const {codigoUsuario, setCodigoUsuario, atualizaResp, setAtualizaResp} = useContext(AuthContext)
-    const url = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?AddResponsaveis'
     
     //Variaveis de input para
     const [inputNome,setInputNome] = useState("");
@@ -135,7 +135,7 @@ export default function EditResponsaveis({navigation}) {
     async function sendImage(codMssg){
         let data = image;
         // setLoading(true);
-        var link = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?uploadImageResponsavel';
+        var link = url + 'uploadImageResponsavel';
         var metodo = 'POST';
         var Autorizacao = 'Authorization';
         let array = data.uri.split('/');
@@ -208,8 +208,7 @@ export default function EditResponsaveis({navigation}) {
                 }else{
                     responsavelCheck = 0
                 }
-                console.log(responsavelCheck)
-                fetch(url,{
+                fetch(url + 'AddResponsaveis',{
                     method: 'post',
                     body: JSON.stringify({
                         'name' : inputNome,
@@ -235,7 +234,7 @@ export default function EditResponsaveis({navigation}) {
                         if(image != null){
                             sendImage(json);
                         }
-                        setAtualizaResp( atualizaResp + 1)
+                        setAtualizaResp(!atualizaResp)
 
                         openModalAlertConf();
                     }

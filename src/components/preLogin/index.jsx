@@ -16,7 +16,7 @@ function PreLogin({ navigation }){
                 },1000)
             }else{
                 alert('Não existe token salvo no Storage no momento!');
-                //navigation.navigate('Login')
+                navigation.navigate('Login')
             }
         }
 

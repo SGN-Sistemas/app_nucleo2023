@@ -1,70 +1,109 @@
-import React, { useState } from 'react'
-import { View, ImageBackground, KeyboardAvoidingView, Image, TextInput, TouchableOpacity, Text, Modal } from 'react-native'
-import { ModalAppConfirma, ModalAppErro } from '../Modal/ModalApp'
-import styles from './styles'
-function PreLogin({ navigation, route }) {
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  Modal,
+  Alert,
+  BackHandler,
+} from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { ModalAppConfirma, ModalAppErro } from "../Modal/ModalApp";
+import styles from "./styles";
+import { Ionicons } from "@expo/vector-icons";
+import { validatePassword } from "../../utils/validPassword";
+import { url } from "../../utils/url";
 
-  const [email, setEmail] = useState(route.params.email)
-  const [isModalConfirm, setIsModalConfirm] = useState(false)
-  const [isModalError, setIsModalError] = useState(false)
-  const [modalErrorInterno, setModalErrorInterno] = useState(false)
-  const [textoError, setTextoError] = useState('')
+function TradePassword({ navigation, route }) {
+  const [email, setEmail] = useState("");
+  const [isModalConfirm, setIsModalConfirm] = useState(false);
+  const [isModalError, setIsModalError] = useState(false);
+  const [senha, setSenha] = useState("");
+  const [hidePass, setHidePass] = useState(true);
+  const [textErr, setTextErr] = useState("");
+  const [error, setError] = useState(true);
 
   const alteraSenha = () => {
-
-    if (email === '') {
-
+    if (email === "" || senha === "") {
+      setTextErr("Preencha todos os campos");
       setIsModalError(true);
-
     } else {
+      const valid  = validatePassword(senha)
+      setTextErr(valid)
+      setError(valid)
+      if (valid != false) {
+        setIsModalError(true);
+        return
+      }
 
-      fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?recuperarSenha', {
-        method: 'POST',
-        body: JSON.stringify({
-          "email": email
-
-        })
-      })
+      fetch(
+        url + "recuperarSenha",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: email,
+            senha: senha,
+          }),
+        }
+      )
         .then((resp) => resp.text())
         .then((json) => {
-          if(json == '"Email nao cadastrado!"'){
-            setTextoError("Email nao cadastrado!")
-            setModalErrorInterno(true)
+          if (json == '"Senha cadastrada com sucesso"') {
+            setIsModalConfirm(true);
             return;
           }
-          setIsModalConfirm(true)
+          setTextErr(["Email nao cadastrado!"]);
+          setIsModalError(true);
+          setError(false)
         })
         .catch((error) => {
-          setTextoError(error.message)
-          setModalErrorInterno(true)
-        })
+          setTextErr([error.message]);
+          setIsModalError(true);
+          setError(false)
 
+        });
     }
-  }
+  };
 
   const sairConf = () => {
-    setIsModalConfirm(false)
-  }
+    if(!error){
+      navigation.navigate("Login");
+    }
+    setIsModalConfirm(false);
+  };
 
   const sairError = () => {
-    setIsModalError(false)
-  }
+    setIsModalError(false);
+  };
 
-  const sairErrorInterno = () => {
-    setModalErrorInterno(false)
-  }
+  const backAction = () => {
+      navigation.navigate("Login");
+  
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
 
   return (
-
-    <KeyboardAvoidingView style={styles.container}>
-
-      <ImageBackground source={require('../../assets/lgpd_protecao_dados.png')}
-        resizeMode="cover" style={styles.image}>
-
+    <View style={styles.container}>
+    <KeyboardAwareScrollView style={{flex:1}} contentContainerStyle={{flexGrow: 1}}>
+      <ImageBackground
+        source={require("../../assets/lgpd_protecao_dados.png")}
+        resizeMode="cover"
+        style={styles.image}>
         <View style={styles.containerImagem}>
           <Image
             style={styles.imageLogo}
-            source={require('../../assets/incentivarLogo.png')}
+            source={require("../../assets/incentivarLogo.png")}
           />
         </View>
 
@@ -75,37 +114,59 @@ function PreLogin({ navigation, route }) {
           onChangeText={(texto) => setEmail(texto)}
         />
 
+        <View style={styles.inputAreaSenha}>
+          <TextInput
+            style={styles.inputSenha}
+            secureTextEntry={hidePass}
+            placeholder="Senha"
+            autoCorrect={false}
+            value={senha}
+            onChangeText={(text) => setSenha(text)}
+          />
+
+          <TouchableOpacity
+            style={styles.iconSenha}
+            onPress={() => setHidePass(!hidePass)}>
+            {hidePass ? (
+              <Ionicons name="eye" size={25} />
+            ) : (
+              <Ionicons name="eye-off" size={25} />
+            )}
+          </TouchableOpacity>
+        </View>
+
         <TouchableOpacity style={styles.btnSubmit} onPress={alteraSenha}>
           <Text style={styles.textSubmit}> Recuperar </Text>
         </TouchableOpacity>
 
-        <Modal transparent={true} animationType="fadeIn" visible={isModalConfirm}>
+        <Modal
+          transparent={true}
+          animationType="fadeIn"
+          visible={isModalConfirm}>
           <View style={styles.modalContainer}>
-            <ModalAppConfirma fechar={() => sairConf()}
-              texto="E-mail com alteração de senha enviado" textoBotao="OK" />
+            <ModalAppConfirma
+              fechar={() => sairConf()}
+              texto="Senha trocada com sucesso"
+              textoBotao="OK"
+            />
           </View>
         </Modal>
 
-        <Modal transparent={true} animationType="fadeIn" visible={isModalError} >
+        <Modal transparent={true} animationType="fadeIn" visible={isModalError}>
           <View style={styles.modalContainer}>
-            <ModalAppErro fechar={() => sairError()}
-              texto="O campo de email não pode estar vazio!" textoBotao="OK" />
+            <ModalAppErro
+              fechar={() => sairError()}
+              texto={textErr}
+              textoBotao="OK"
+            />
           </View>
         </Modal>
-
-        <Modal transparent={true} animationType="fadeIn" visible={modalErrorInterno} >
-          <View style={styles.modalContainer}>
-            <ModalAppErro fechar={() => sairErrorInterno()}
-              texto={textoError} textoBotao="OK" />
-          </View>
-        </Modal>
-
       </ImageBackground>
-
-    </KeyboardAvoidingView>
-  )
+      </KeyboardAwareScrollView>
+    </View>
+  );
 }
 
-
-
-export default PreLogin
+export default TradePassword;
+//reinaldo.santos@sgnsistemas.com.br
+//Sgn@2022@

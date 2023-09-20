@@ -16,14 +16,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 283,
     height: 134,
-    marginTop: 60
+    marginTop:30
   },
   containerForm: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
-    marginBottom: 0
+    marginBottom: 20
   },
   input: {
     backgroundColor: '#fff',

@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text,StyleSheet,Image, TouchableOpacity} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles'
+import { urlImage } from '../../../utils/url';
 
 export default function Responsavel({data}) {
     //const image = "https://cdn.pixabay.com/photo/2017/08/01/01/33/beanie-2562646_960_720.jpg";
@@ -27,7 +28,7 @@ export default function Responsavel({data}) {
         email:email,
         telefone1: telefone1,
         telefone2: telefone2,
-        imagem: "http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/_lib/file/img/chamado/" + imagem,
+        imagem: urlImage + "" + imagem,
         idade:idade,
         paciente_crianca: paciente_crianca
     };

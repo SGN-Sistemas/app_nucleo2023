@@ -5,7 +5,6 @@ import Agendamento from '../agendamentos/index.jsx'
 import styles from './styles'
 
 function ListaAgendamentos({navigation}) {
-
 const [token, setToken] = useState()
 const [cod, setCod] = useState()
 const [objetos, setObjetos] = useState()
@@ -40,9 +39,6 @@ const requisicao = async () => {
   .then((json) => {
         setAccessToken(() => json.access_token)
         let token = json.access_token
-        console.log('====================================');
-        console.log(idUser);
-        console.log('====================================');
         fetch('https://api.ninsaude.com/v1/atendimento_agenda/listar/paciente/'+idUser, {
           method: 'GET',
           headers: {

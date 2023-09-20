@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -123,8 +123,6 @@ function Agendamento(props) {
     const diffDate = dataHoraAgen.getDate() - date.getDate();
 
     const diffHora = dataHoraAgen.getUTCHours() - date.getHours();
-
-    console.log(diffDate);
 
     if (diffDate == 0) {
 

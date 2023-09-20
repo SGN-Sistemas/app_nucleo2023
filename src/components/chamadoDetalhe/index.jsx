@@ -17,6 +17,7 @@ import FlatListItem from "../flatListDetalhes";
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../contexts/ContextApi.jsx';
 import styles from './styles'
+import { url } from "../../utils/url";
 
 export default function App({ route }) {
     const navigation = useNavigation();
@@ -53,7 +54,7 @@ export default function App({ route }) {
     async function puxaChamadoDetalheAndroid() {
 
         setLoading(true)
-        await fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamado_detalhe', {
+        await fetch(url + 'chamado_detalhe', {
             method: 'POST',
             body: JSON.stringify({
                 "idchamado": chamado.cod_chamado,
@@ -75,7 +76,7 @@ export default function App({ route }) {
     async function puxaChamadoDetalheIos() {
 
         //setLoading(true)
-        await fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamado_detalhe', {
+        await fetch( url + 'chamado_detalhe', {
             method: 'POST',
             body: JSON.stringify({
                 "idchamado": chamado.cod_chamado,

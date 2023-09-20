@@ -2,7 +2,7 @@
   "expo": {
     "name": "Núcleo Incentivar",
     "slug": "nucleoincentivar",
-    "version": "23.0.0",
+    "version": "30.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon_app.png",
     "splash": {
@@ -23,7 +23,7 @@
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
       },
-      "buildNumber": "11.0.0",
+      "buildNumber": "18.0.0",
       "bundleIdentifier": "com.sgn.inova.nucleoincentivar"
     },
     "android": {
@@ -38,7 +38,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.sgn.inova.nucleoincentivar",
-      "versionCode": 23
+      "versionCode": 29
     },
     "web": {
       "favicon": "./src/assets/icon_app.png"

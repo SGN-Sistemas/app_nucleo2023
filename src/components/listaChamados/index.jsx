@@ -5,6 +5,8 @@ import { EvilIcons } from '@expo/vector-icons';
 import {AuthContext} from '../../contexts/ContextApi';
 import { Ionicons } from "@expo/vector-icons";
 import styles from './styles'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { url } from '../../utils/url';
 
 function ListaChamados({navigation}) {
 
@@ -29,7 +31,7 @@ const onRefresh = useCallback(() => {
 
 function puxaChamados(){
     setLoading(true)
-        fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?chamados', {
+        fetch(url + 'chamados', {
             method: 'POST',
             body: JSON.stringify({
                 "user" : codPessoa,
@@ -52,15 +54,15 @@ function puxaChamados(){
 }
 
 useEffect(() => {
-    
-    puxaChamados();
-
+    (
+    async ()=>{
+        puxaChamados();
+    }
+    )();
 }, [])
 
 useEffect(() => {
-    
     puxaChamados();
-
 }, [atualizaChamado])
 
 useEffect(() => {

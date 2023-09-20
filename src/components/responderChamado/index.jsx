@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
+import { url } from "../../utils/url";
 
 export default function RespChamado({ route }) {
   const chamado= route.params; 
@@ -58,7 +59,7 @@ export default function RespChamado({ route }) {
   
   function enviarMensagem(){
     setLoading(true)
-    fetch('http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?inserirMensagem', {
+    fetch(url + 'inserirMensagem', {
         method: 'POST',
         body: JSON.stringify({
             "idchamado": chamado.chamado.cod_chamado,
@@ -79,9 +80,7 @@ export default function RespChamado({ route }) {
       setAtualizaChamadoDetalhe(!atualizaChamadoDetalhe)
       
     }).catch((error) => {
-      console.warn(error);
       setLoading(false)
-
     });
   }
 
@@ -89,7 +88,7 @@ export default function RespChamado({ route }) {
   async function sendImage(codMssg){
     let data = image;
     setLoading(true);
-    var link = 'http://login.sgnsistemas.com.br:8090/sgn_lgpd_nucleo/webservice_php_json/webservice_php_json.php?uploadImage';
+    var link = url + 'uploadImage';
     var metodo = 'POST';
     var Autorizacao = 'Authorization';
     let array = data.uri.split('/')
@@ -116,7 +115,6 @@ export default function RespChamado({ route }) {
       }
       setLoading(false)
     }).catch((error) => {
-      console.warn(error);
       setLoading(false)
     });
   }
