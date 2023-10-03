@@ -2,7 +2,7 @@
   "expo": {
     "name": "Núcleo Incentivar",
     "slug": "nucleoincentivar",
-    "version": "30.0.0",
+    "version": "32.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon_app.png",
     "splash": {
@@ -38,7 +38,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.sgn.inova.nucleoincentivar",
-      "versionCode": 29
+      "versionCode": 31
     },
     "web": {
       "favicon": "./src/assets/icon_app.png"

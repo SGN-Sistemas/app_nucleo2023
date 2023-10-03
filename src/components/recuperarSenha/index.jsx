@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   ImageBackground,
-  KeyboardAvoidingView,
   Image,
   TextInput,
   TouchableOpacity,
   Text,
   Modal,
-  Alert,
   BackHandler,
 } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import * as EmailValidator from "email-validator";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { ModalAppConfirma, ModalAppErro } from "../Modal/ModalApp";
 import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,24 +31,27 @@ function TradePassword({ navigation, route }) {
       setTextErr("Preencha todos os campos");
       setIsModalError(true);
     } else {
-      const valid  = validatePassword(senha)
-      setTextErr(valid)
-      setError(valid)
+      const validEmail = EmailValidator.validate(email);
+      if (!validEmail) {
+        setTextErr("Email invalido");
+        setIsModalError(true);
+        return;
+      }
+      const valid = validatePassword(senha);
+      setTextErr(valid);
+      setError(valid);
       if (valid != false) {
         setIsModalError(true);
-        return
+        return;
       }
 
-      fetch(
-        url + "recuperarSenha",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: email,
-            senha: senha,
-          }),
-        }
-      )
+      fetch(url + "recuperarSenha", {
+        method: "POST",
+        body: JSON.stringify({
+          email: email,
+          senha: senha,
+        }),
+      })
         .then((resp) => resp.text())
         .then((json) => {
           if (json == '"Senha cadastrada com sucesso"') {
@@ -58,19 +60,18 @@ function TradePassword({ navigation, route }) {
           }
           setTextErr(["Email nao cadastrado!"]);
           setIsModalError(true);
-          setError(false)
+          setError(false);
         })
         .catch((error) => {
           setTextErr([error.message]);
           setIsModalError(true);
-          setError(false)
-
+          setError(false);
         });
     }
   };
 
   const sairConf = () => {
-    if(!error){
+    if (!error) {
       navigation.navigate("Login");
     }
     setIsModalConfirm(false);
@@ -81,8 +82,8 @@ function TradePassword({ navigation, route }) {
   };
 
   const backAction = () => {
-      navigation.navigate("Login");
-  
+    navigation.navigate("Login");
+
     return true;
   };
 
@@ -95,78 +96,82 @@ function TradePassword({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-    <KeyboardAwareScrollView style={{flex:1}} contentContainerStyle={{flexGrow: 1}}>
-      <ImageBackground
-        source={require("../../assets/lgpd_protecao_dados.png")}
-        resizeMode="cover"
-        style={styles.image}>
-        <View style={styles.containerImagem}>
-          <Image
-            style={styles.imageLogo}
-            source={require("../../assets/incentivarLogo.png")}
-          />
-        </View>
+      <KeyboardAwareScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}>
+        <ImageBackground
+          source={require("../../assets/lgpd_protecao_dados.png")}
+          resizeMode="cover"
+          style={styles.image}>
+          <View style={styles.containerImagem}>
+            <Image
+              style={styles.imageLogo}
+              source={require("../../assets/incentivarLogo.png")}
+            />
+          </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Informe o e-mail cadastrado"
-          value={email}
-          onChangeText={(texto) => setEmail(texto)}
-        />
-
-        <View style={styles.inputAreaSenha}>
           <TextInput
-            style={styles.inputSenha}
-            secureTextEntry={hidePass}
-            placeholder="Senha"
-            autoCorrect={false}
-            value={senha}
-            onChangeText={(text) => setSenha(text)}
+            style={styles.input}
+            placeholder="Informe o e-mail cadastrado"
+            value={email}
+            onChangeText={(texto) => setEmail(texto)}
           />
 
-          <TouchableOpacity
-            style={styles.iconSenha}
-            onPress={() => setHidePass(!hidePass)}>
-            {hidePass ? (
-              <Ionicons name="eye" size={25} />
-            ) : (
-              <Ionicons name="eye-off" size={25} />
-            )}
+          <View style={styles.inputAreaSenha}>
+            <TextInput
+              style={styles.inputSenha}
+              secureTextEntry={hidePass}
+              placeholder="Senha"
+              autoCorrect={false}
+              value={senha}
+              onChangeText={(text) => setSenha(text)}
+            />
+
+            <TouchableOpacity
+              style={styles.iconSenha}
+              onPress={() => setHidePass(!hidePass)}>
+              {hidePass ? (
+                <Ionicons name="eye" size={25} />
+              ) : (
+                <Ionicons name="eye-off" size={25} />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.btnSubmit} onPress={alteraSenha}>
+            <Text style={styles.textSubmit}> Recuperar </Text>
           </TouchableOpacity>
-        </View>
 
-        <TouchableOpacity style={styles.btnSubmit} onPress={alteraSenha}>
-          <Text style={styles.textSubmit}> Recuperar </Text>
-        </TouchableOpacity>
+          <Modal
+            transparent={true}
+            animationType="fadeIn"
+            visible={isModalConfirm}>
+            <View style={styles.modalContainer}>
+              <ModalAppConfirma
+                fechar={() => sairConf()}
+                texto="Senha trocada com sucesso"
+                textoBotao="OK"
+              />
+            </View>
+          </Modal>
 
-        <Modal
-          transparent={true}
-          animationType="fadeIn"
-          visible={isModalConfirm}>
-          <View style={styles.modalContainer}>
-            <ModalAppConfirma
-              fechar={() => sairConf()}
-              texto="Senha trocada com sucesso"
-              textoBotao="OK"
-            />
-          </View>
-        </Modal>
-
-        <Modal transparent={true} animationType="fadeIn" visible={isModalError}>
-          <View style={styles.modalContainer}>
-            <ModalAppErro
-              fechar={() => sairError()}
-              texto={textErr}
-              textoBotao="OK"
-            />
-          </View>
-        </Modal>
-      </ImageBackground>
+          <Modal
+            transparent={true}
+            animationType="fadeIn"
+            visible={isModalError}>
+            <View style={styles.modalContainer}>
+              <ModalAppErro
+                fechar={() => sairError()}
+                texto={textErr}
+                textoBotao="OK"
+              />
+            </View>
+          </Modal>
+        </ImageBackground>
       </KeyboardAwareScrollView>
     </View>
   );
 }
 
 export default TradePassword;
-//reinaldo.santos@sgnsistemas.com.br
-//Sgn@2022@
+

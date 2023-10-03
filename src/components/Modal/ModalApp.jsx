@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { AuthContext } from '../../contexts/ContextApi.jsx';
+import { AuthContext } from "../../contexts/ContextApi.jsx";
 
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 
 import {
   View,
@@ -10,11 +10,11 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  TextInput
+  TextInput,
 } from "react-native";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
-import * as Linking from 'expo-linking';
+import * as Linking from "expo-linking";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { url } from "../../utils/url.js";
@@ -67,17 +67,13 @@ function ModalAppErro({ fechar, texto, textoBotao }) {
 
 function ModalAlertHorario({ fechar, modalOpen }) {
   const error = () => {
-    
     fechar();
     modalOpen();
-
   };
 
   const close = () => {
-
     fechar();
-
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -87,25 +83,22 @@ function ModalAlertHorario({ fechar, modalOpen }) {
           source={require("../../assets/x-button.png")}
         />
 
-        <Text style={styles.textoAlertHorario}>Sera cobrado o valor integral por está sendo cancelado menos de 12 horas antes da consulta </Text>
-
-        <Text style={styles.texto}>
-          
-          Prosseguir com o cancelamento?
-
+        <Text style={styles.textoAlertHorario}>
+          Sera cobrado o valor integral por está sendo cancelado menos de 12
+          horas antes da consulta{" "}
         </Text>
+
+        <Text style={styles.texto}>Prosseguir com o cancelamento?</Text>
 
         <View style={styles.btnAreaNaoConf}>
           <TouchableOpacity
             style={styles.containerBotaoAgenNao}
-            onPress={close}
-          >
+            onPress={close}>
             <Text style={styles.textoBotaoAgen}>Não</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.containerBotaoAgenSim}
-            onPress={error}
-          >
+            onPress={error}>
             <Text style={styles.textoBotaoAgen}>Sim</Text>
           </TouchableOpacity>
         </View>
@@ -114,70 +107,72 @@ function ModalAlertHorario({ fechar, modalOpen }) {
   );
 }
 
-function ModalEnviaMotivo({ fechar,obj,abrir}) {
+function ModalEnviaMotivo({ fechar, obj, abrir }) {
+  const [inputMotivo, setInputMotivo] = useState("");
 
-  const [inputMotivo,setInputMotivo] = useState("");
-
-  const {idUser, setIdUser} = useContext(AuthContext);
+  const { idUser, setIdUser } = useContext(AuthContext);
 
   const error = () => {
     fechar();
   };
 
-  const abrirAlert = () =>{
-
+  const abrirAlert = () => {
     abrir();
+  };
 
-  }
-  
-  const enviarMotivoCancel = () =>{
-
+  const enviarMotivoCancel = () => {
     let count = 0;
 
-    if(count == 0 ){
-
+    if (count == 0) {
       enviarMotivo();
 
       count++;
-
     }
-
-  
-
-  }
+  };
 
   const enviarMotivo = async () => {
+    abrirAlert();
 
-    await fetch( url + "cancelaAgendamento", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "cache-control": "no-cache",
-      },
-      body: JSON.stringify({
-        
-        "id_agendamento":obj.id,
-        "motivo":inputMotivo,
-        "idUser":idUser,
-      }),
-    })
-    .then((response)=>{
+    // await fetch( url + "cancelaAgendamento", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //     "cache-control": "no-cache",
+    //   },
+    //   body: JSON.stringify({
+    //     "id_agendamento":obj.id,
+    //     "motivo":inputMotivo,
+    //     "idUser":idUser,
+    //   }),
+    // })
+    // .then((response)=>{
 
-      response.json();
-      
-    })
-    .then((resp) => {
+    //   console.log('3====================================');
+    //   console.log({
+    //     "id_agendamento":obj.id,
+    //     "motivo":inputMotivo,
+    //     "idUser":idUser,
+    //   });
+    //   console.log('====================================');
+    //   response.json();
 
-      error();
+    // })
+    // .then((resp) => {
 
-      abrirAlert();
+    //   console.log('1====================================');
+    //   console.log(resp);
+    //   console.log('====================================');
+    //   //error();
 
-    })
-    .catch((error)=>{
+    //   //abrirAlert();
 
-    })
-
-  }
+    // })
+    // .catch((error)=>{
+    //   console.log('2====================================');
+    //   console.log(error);
+    //   console.log('====================================');
+    // })
+  };
 
   return (
     <View style={styles.container}>
@@ -188,7 +183,7 @@ function ModalEnviaMotivo({ fechar,obj,abrir}) {
         />
         <Text style={styles.texto}>Motivo do cancelamento?</Text>
         <TextInput
-        style={styles.textInput}
+          style={styles.textInput}
           multiline={true}
           numberOfLines={4}
           maxLength={100}
@@ -196,7 +191,9 @@ function ModalEnviaMotivo({ fechar,obj,abrir}) {
           onChangeText={setInputMotivo}
           value={inputMotivo}
         />
-        <TouchableOpacity style={styles.containerBotao} onPress={enviarMotivoCancel}>
+        <TouchableOpacity
+          style={styles.containerBotao}
+          onPress={enviarMotivoCancel}>
           <Text style={styles.textoBotao}>Enviar</Text>
         </TouchableOpacity>
       </View>
@@ -212,10 +209,11 @@ function ModalAppConfirmaAgendamento({
   clinica,
   fechar,
   obj,
-  abrirAlert
+  abrirAlert,
 }) {
-  const [accessToken, setAccessToken] = useState()
-  const { att, setAtt } = useContext(AuthContext)
+  const [accessToken, setAccessToken] = useState();
+  const { horarioAlert12H, idUser, att, setAtt, codigoUsuario } =
+    useContext(AuthContext);
   const confirma = async () => {
     await fetch("https://api.ninsaude.com/v1/oauth2/token", {
       method: "POST",
@@ -235,89 +233,89 @@ function ModalAppConfirmaAgendamento({
           {
             method: "PUT",
             headers: {
-              'Authorization': 'bearer '+token,
+              Authorization: "bearer " + token,
               "Content-Type": "application/json",
               "cache-control": "no-cache",
             },
-            body: JSON.stringify( {
-              "id": obj.id,
-              "accountUnidadeId": obj.accountUnidadeId,
-              "accountUnidadeUnidade": obj.accountUnidadeUnidade,
-              "accountUnidadeDescricao": obj.accountUnidadeDescricao,
-              "profissionalId": obj.profissionalId,
-              "profissionalNome": obj.profissionalNome,
-              "profissionalAgendaCor": obj.profissionalAgendaCor,
-              "profissionalAtivo": obj.profissionalAtivo,
-              "profissionalFoto": obj.profissionalFoto,
-              "data": obj.data,
-              "horaInicial": obj.horaInicial,
-              "horaFinal": obj.horaFinal,
-              "horaChegada": obj.horaChegada,
-              "pacienteId":obj.pacienteId,
-              "pacienteNome": obj.pacienteNome,
-              "pacienteNomeSocial": obj.pacienteNomeSocial,
-              "pacienteEmail": obj.pacienteEmail,
-              "pacienteDataNascimento": obj.pacienteDataNascimento,
-              "pacienteSexo": obj.pacienteSexo,
-              "pacienteProfissao": obj.pacienteProfissao,
-              "pacienteFoneCelular": obj.pacienteFoneCelular,
-              "pacienteFoneComercial": obj.pacienteFoneComercial,
-              "pacienteFoneResidencial": obj.pacienteFoneResidencial,
-              "pacienteFoto": obj.pacienteFoto,
-              "status": 2,
-              "convenioId": obj.convenioId,
-              "convenioTitulo": obj.convenioTitulo,
-              "convenioPlanoId": obj.convenioPlanoId,
-              "convenioPlanoDescricao": obj.convenioPlanoDescricao,
-              "convenioCarteira": obj.convenioCarteira,
-              "convenioValidade": obj.convenioValidade,
-              "servicoId": obj.servicoId,
-              "servicoDescricao": obj.servicoDescricao,
-              "especialidadeId": obj.especialidadeId,
-              "especialidadeDescricao": obj.especialidadeDescricao,
-              "encaminhadorId": obj.encaminhadorId,
-              "encaminhadorNome": obj.encaminhadorNome,
-              "salaId": obj.salaId,
-              "salaDescricao": obj.salaDescricao,
-              "salaAgendaCor": obj.salaAgendaCor,
-              "hashRecurso": obj.hashRecurso,
-              "acompanhanteNome": obj.acompanhanteNome,
-              "acompanhanteTelefone": obj.acompanhanteTelefone,
-              "servicoAdicionalId": obj.servicoAdicionalId,
-              "tempoEspera": obj.tempoEspera,
-              "canceladoProximoAgendamentoData": obj.canceladoProximoAgendamentoData,
-              "prontuarioData": obj.prontuarioData,
-              "prontuarioDuracao": obj.prontuarioDuracao,
-              "prontuarioHoraInicial": obj.prontuarioHoraInicial,
-              "prontuarioEncerrado": obj.prontuarioEncerrado,
-              "enviadoConfirmacao": obj.enviadoConfirmacao,
-          }),
+            body: JSON.stringify({
+              id: obj.id,
+              accountUnidadeId: obj.accountUnidadeId,
+              accountUnidadeUnidade: obj.accountUnidadeUnidade,
+              accountUnidadeDescricao: obj.accountUnidadeDescricao,
+              profissionalId: obj.profissionalId,
+              profissionalNome: obj.profissionalNome,
+              profissionalAgendaCor: obj.profissionalAgendaCor,
+              profissionalAtivo: obj.profissionalAtivo,
+              profissionalFoto: obj.profissionalFoto,
+              data: obj.data,
+              horaInicial: obj.horaInicial,
+              horaFinal: obj.horaFinal,
+              horaChegada: obj.horaChegada,
+              pacienteId: obj.pacienteId,
+              pacienteNome: obj.pacienteNome,
+              pacienteNomeSocial: obj.pacienteNomeSocial,
+              pacienteEmail: obj.pacienteEmail,
+              pacienteDataNascimento: obj.pacienteDataNascimento,
+              pacienteSexo: obj.pacienteSexo,
+              pacienteProfissao: obj.pacienteProfissao,
+              pacienteFoneCelular: obj.pacienteFoneCelular,
+              pacienteFoneComercial: obj.pacienteFoneComercial,
+              pacienteFoneResidencial: obj.pacienteFoneResidencial,
+              pacienteFoto: obj.pacienteFoto,
+              status: 2,
+              convenioId: obj.convenioId,
+              convenioTitulo: obj.convenioTitulo,
+              convenioPlanoId: obj.convenioPlanoId,
+              convenioPlanoDescricao: obj.convenioPlanoDescricao,
+              convenioCarteira: obj.convenioCarteira,
+              convenioValidade: obj.convenioValidade,
+              servicoId: obj.servicoId,
+              servicoDescricao: obj.servicoDescricao,
+              especialidadeId: obj.especialidadeId,
+              especialidadeDescricao: obj.especialidadeDescricao,
+              encaminhadorId: obj.encaminhadorId,
+              encaminhadorNome: obj.encaminhadorNome,
+              salaId: obj.salaId,
+              salaDescricao: obj.salaDescricao,
+              salaAgendaCor: obj.salaAgendaCor,
+              hashRecurso: obj.hashRecurso,
+              acompanhanteNome: obj.acompanhanteNome,
+              acompanhanteTelefone: obj.acompanhanteTelefone,
+              servicoAdicionalId: obj.servicoAdicionalId,
+              tempoEspera: obj.tempoEspera,
+              canceladoProximoAgendamentoData:
+                obj.canceladoProximoAgendamentoData,
+              prontuarioData: obj.prontuarioData,
+              prontuarioDuracao: obj.prontuarioDuracao,
+              prontuarioHoraInicial: obj.prontuarioHoraInicial,
+              prontuarioEncerrado: obj.prontuarioEncerrado,
+              enviadoConfirmacao: obj.enviadoConfirmacao,
+            }),
           }
         )
           .then(async () => {
-            const lgn = await AsyncStorage.getItem('login')
+            const lgn = await AsyncStorage.getItem("login");
 
             fetch(url + "inserirLog", {
               method: "POST",
               body: JSON.stringify({
-                'LOAC_ACESSO_APP_ID': idUser,
-                'LOAC_TIPO': 'CONF',
-                'LOAC_PRAZO_12H': 'N',
-                'LOAC_ID_AGENDAMENTO': obj.id,
-                'USER_NAME': lgn,
-              })
+                LOAC_ACESSO_APP_ID: idUser,
+                LOAC_TIPO: "CONF",
+                LOAC_PRAZO_12H: "N",
+                LOAC_ID_AGENDAMENTO: obj.id,
+                USER_NAME: lgn,
+              }),
             })
               .then(() => {
-                setAtt(!att)
+                setAtt(!att);
+                abrirAlert();
               })
-              .catch(() => {
-              })
-            abrirAlert();
+              .catch(() => {});
           })
           .catch((error) => alert("error: " + error));
-      }
-      ).catch((error) => alert('error: ' + error));
-      fecharr();
+      })
+      .catch((error) => alert("error: " + error));
+    fecharr();
   };
   const fecharr = () => {
     fechar();
@@ -355,7 +353,6 @@ function ModalAppConfirmaAgendamento({
   );
 }
 function ModalAlertConf({ modalOpen, modalCovid, textoBotao, texto }) {
-  
   const confirma = () => {
     modalOpen();
     modalCovid();
@@ -366,7 +363,8 @@ function ModalAlertConf({ modalOpen, modalCovid, textoBotao, texto }) {
       <View style={styles.modal}>
         <Image
           style={styles.img}
-          source={require("../../assets/checked.png")} />  
+          source={require("../../assets/checked.png")}
+        />
 
         <Text style={styles.texto}>{texto}</Text>
 
@@ -382,9 +380,8 @@ function ModalAppNaoConfirmaAgendamento({
   dataFormatada,
   horaFormatada,
   clinica,
-  abrirAlert
+  abrirAlert,
 }) {
-
   const close = () => {
     fechar();
   };
@@ -412,14 +409,14 @@ function ModalAppNaoConfirmaAgendamento({
         <View style={styles.btnAreaNaoConf}>
           <TouchableOpacity
             style={styles.containerBotaoAgenNao}
-            onPress={close}
-          >
+            onPress={close}>
             <Text style={styles.textoBotaoAgen}>Não</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.containerBotaoAgenSim}
-            onPress={() => { abrirAlert }}
-          >
+            onPress={() => {
+              abrirAlert();
+            }}>
             <Text style={styles.textoBotaoAgen}>Sim</Text>
           </TouchableOpacity>
         </View>
@@ -450,13 +447,12 @@ function ModalAlertNaoConf({ modalOpen, texto, textoBotao }) {
   );
 }
 
-function ModalAlertConfCanc({ modalOpen, abrirAlert,obj }) {
+function ModalAlertConfCanc({ modalOpen, abrirAlert, obj }) {
   const fechar = () => {
     modalOpen();
   };
-
-  const { horarioAlert12H, idUser,att,setAtt } = useContext(AuthContext)
-
+  const { horarioAlert12H, idUser, att, setAtt, codigoUsuario } =
+    useContext(AuthContext);
 
   const confirma = async () => {
     await fetch("https://api.ninsaude.com/v1/oauth2/token", {
@@ -472,95 +468,93 @@ function ModalAlertConfCanc({ modalOpen, abrirAlert,obj }) {
         let token = json.access_token;
         fetch(
           "https://api.ninsaude.com/v1/atendimento_agenda/alterar/status/agendamento/" +
-          obj.id,
+            obj.id,
           {
             method: "PUT",
             headers: {
-              'Authorization': 'bearer ' + token,
+              Authorization: "bearer " + token,
               "Content-Type": "application/json",
               "cache-control": "no-cache",
             },
             body: JSON.stringify({
-              "id": obj.id,
-              "accountUnidadeId": obj.accountUnidadeId,
-              "accountUnidadeUnidade": obj.accountUnidadeUnidade,
-              "accountUnidadeDescricao": obj.accountUnidadeDescricao,
-              "profissionalId": obj.profissionalId,
-              "profissionalNome": obj.profissionalNome,
-              "profissionalAgendaCor": obj.profissionalAgendaCor,
-              "profissionalAtivo": obj.profissionalAtivo,
-              "profissionalFoto": obj.profissionalFoto,
-              "data": obj.data,
-              "horaInicial": obj.horaInicial,
-              "horaFinal": obj.horaFinal,
-              "horaChegada": obj.horaChegada,
-              "pacienteId": obj.pacienteId,
-              "pacienteNome": obj.pacienteNome,
-              "pacienteNomeSocial": obj.pacienteNomeSocial,
-              "pacienteEmail": obj.pacienteEmail,
-              "pacienteDataNascimento": obj.pacienteDataNascimento,
-              "pacienteSexo": obj.pacienteSexo,
-              "pacienteProfissao": obj.pacienteProfissao,
-              "pacienteFoneCelular": obj.pacienteFoneCelular,
-              "pacienteFoneComercial": obj.pacienteFoneComercial,
-              "pacienteFoneResidencial": obj.pacienteFoneResidencial,
-              "pacienteFoto": obj.pacienteFoto,
-              "status": 5,
-              "convenioId": obj.convenioId,
-              "convenioTitulo": obj.convenioTitulo,
-              "convenioPlanoId": obj.convenioPlanoId,
-              "convenioPlanoDescricao": obj.convenioPlanoDescricao,
-              "convenioCarteira": obj.convenioCarteira,
-              "convenioValidade": obj.convenioValidade,
-              "servicoId": obj.servicoId,
-              "servicoDescricao": obj.servicoDescricao,
-              "especialidadeId": obj.especialidadeId,
-              "especialidadeDescricao": obj.especialidadeDescricao,
-              "encaminhadorId": obj.encaminhadorId,
-              "encaminhadorNome": obj.encaminhadorNome,
-              "salaId": obj.salaId,
-              "salaDescricao": obj.salaDescricao,
-              "salaAgendaCor": obj.salaAgendaCor,
-              "hashRecurso": obj.hashRecurso,
-              "acompanhanteNome": obj.acompanhanteNome,
-              "acompanhanteTelefone": obj.acompanhanteTelefone,
-              "servicoAdicionalId": obj.servicoAdicionalId,
-              "tempoEspera": obj.tempoEspera,
-              "canceladoProximoAgendamentoData": obj.canceladoProximoAgendamentoData,
-              "prontuarioData": obj.prontuarioData,
-              "prontuarioDuracao": obj.prontuarioDuracao,
-              "prontuarioHoraInicial": obj.prontuarioHoraInicial,
-              "prontuarioEncerrado": obj.prontuarioEncerrado,
-              "enviadoConfirmacao": obj.enviadoConfirmacao,
+              id: obj.id,
+              accountUnidadeId: obj.accountUnidadeId,
+              accountUnidadeUnidade: obj.accountUnidadeUnidade,
+              accountUnidadeDescricao: obj.accountUnidadeDescricao,
+              profissionalId: obj.profissionalId,
+              profissionalNome: obj.profissionalNome,
+              profissionalAgendaCor: obj.profissionalAgendaCor,
+              profissionalAtivo: obj.profissionalAtivo,
+              profissionalFoto: obj.profissionalFoto,
+              data: obj.data,
+              horaInicial: obj.horaInicial,
+              horaFinal: obj.horaFinal,
+              horaChegada: obj.horaChegada,
+              pacienteId: obj.pacienteId,
+              pacienteNome: obj.pacienteNome,
+              pacienteNomeSocial: obj.pacienteNomeSocial,
+              pacienteEmail: obj.pacienteEmail,
+              pacienteDataNascimento: obj.pacienteDataNascimento,
+              pacienteSexo: obj.pacienteSexo,
+              pacienteProfissao: obj.pacienteProfissao,
+              pacienteFoneCelular: obj.pacienteFoneCelular,
+              pacienteFoneComercial: obj.pacienteFoneComercial,
+              pacienteFoneResidencial: obj.pacienteFoneResidencial,
+              pacienteFoto: obj.pacienteFoto,
+              status: 5,
+              convenioId: obj.convenioId,
+              convenioTitulo: obj.convenioTitulo,
+              convenioPlanoId: obj.convenioPlanoId,
+              convenioPlanoDescricao: obj.convenioPlanoDescricao,
+              convenioCarteira: obj.convenioCarteira,
+              convenioValidade: obj.convenioValidade,
+              servicoId: obj.servicoId,
+              servicoDescricao: obj.servicoDescricao,
+              especialidadeId: obj.especialidadeId,
+              especialidadeDescricao: obj.especialidadeDescricao,
+              encaminhadorId: obj.encaminhadorId,
+              encaminhadorNome: obj.encaminhadorNome,
+              salaId: obj.salaId,
+              salaDescricao: obj.salaDescricao,
+              salaAgendaCor: obj.salaAgendaCor,
+              hashRecurso: obj.hashRecurso,
+              acompanhanteNome: obj.acompanhanteNome,
+              acompanhanteTelefone: obj.acompanhanteTelefone,
+              servicoAdicionalId: obj.servicoAdicionalId,
+              tempoEspera: obj.tempoEspera,
+              canceladoProximoAgendamentoData:
+                obj.canceladoProximoAgendamentoData,
+              prontuarioData: obj.prontuarioData,
+              prontuarioDuracao: obj.prontuarioDuracao,
+              prontuarioHoraInicial: obj.prontuarioHoraInicial,
+              prontuarioEncerrado: obj.prontuarioEncerrado,
+              enviadoConfirmacao: obj.enviadoConfirmacao,
             }),
           }
         )
           .then(async () => {
-            const lgn = await AsyncStorage.getItem('login')
+            const lgn = await AsyncStorage.getItem("login");
 
-            fetch( url+"inserirLog", {
+
+            fetch(url + "inserirLog", {
               method: "POST",
               body: JSON.stringify({
-                'LOAC_ACESSO_APP_ID': idUser,
-                'LOAC_TIPO': 'CANC',
-                'LOAC_PRAZO_12H': horarioAlert12H,
-                'LOAC_ID_AGENDAMENTO': obj.id,
-                'USER_NAME': lgn,
-              })
+                LOAC_ACESSO_APP_ID: idUser,
+                LOAC_TIPO: "CANC",
+                LOAC_PRAZO_12H: "N",
+                LOAC_ID_AGENDAMENTO: obj.id,
+                USER_NAME: lgn,
+              }),
             })
               .then(() => {
-                setAtt(!att)
+                setAtt(!att);
+                abrirAlert();
               })
-              .catch(() => {
-              })
-
-            abrirAlert();
-            fechar();
-
+              .catch(() => {});
           })
           .catch((error) => alert("error: " + error));
-      }
-      ).catch((error) => alert('error: ' + error));
+      })
+      .catch((error) => alert("error: " + error));
   };
 
   return (
@@ -573,10 +567,14 @@ function ModalAlertConfCanc({ modalOpen, abrirAlert,obj }) {
 
         <Text style={styles.texto}>Confirmar cancelamento?</Text>
         <View style={styles.btnAreaNaoConf}>
-          <TouchableOpacity style={styles.containerBotaoAgenSim} onPress={confirma}>
+          <TouchableOpacity
+            style={styles.containerBotaoAgenSim}
+            onPress={confirma}>
             <Text style={styles.textoBotao}>Sim</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.containerBotaoAgenNao} onPress={fechar}>
+          <TouchableOpacity
+            style={styles.containerBotaoAgenNao}
+            onPress={fechar}>
             <Text style={styles.textoBotao}>Não</Text>
           </TouchableOpacity>
         </View>
@@ -585,7 +583,7 @@ function ModalAlertConfCanc({ modalOpen, abrirAlert,obj }) {
   );
 }
 
-function ModalAlertAtt({ modalOpen, texto, textoBotao,linking }) {
+function ModalAlertAtt({ modalOpen, texto, textoBotao, linking }) {
   const error = () => {
     Linking.openURL(linking);
     modalOpen();
@@ -608,7 +606,7 @@ function ModalAlertAtt({ modalOpen, texto, textoBotao,linking }) {
     </View>
   );
 }
-function ModalAlertErroResp({ modalOpen, texto, textoBotao,back }) {
+function ModalAlertErroResp({ modalOpen, texto, textoBotao, back }) {
   const error = () => {
     modalOpen();
     back();
@@ -640,8 +638,7 @@ function ModalAppCovid({ funcao }) {
       <View style={styles.modalCovid}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={styles.scrollView}
-        >
+          style={styles.scrollView}>
           <View style={styles.ViewAreaCovid}>
             <TouchableOpacity style={styles.iconCovid} onPress={fechar}>
               <Feather name="x" size={24} color="black" />
@@ -740,8 +737,7 @@ const ModalPickerDep = ({ fechar, setData, dados }) => {
       <TouchableOpacity
         style={styles.modalPickerButton}
         key={index}
-        onPress={() => onPressItem(item.empresas, item.codigoEmpresa)}
-      >
+        onPress={() => onPressItem(item.empresas, item.codigoEmpresa)}>
         <Text style={styles.modalPickerText}>{item.empresas}</Text>
       </TouchableOpacity>
     );
@@ -767,8 +763,7 @@ const ModalPickerPrio = ({ fechar, setData }) => {
       <TouchableOpacity
         style={styles.modalPickerButton}
         key={index}
-        onPress={() => onPressItem(item)}
-      >
+        onPress={() => onPressItem(item)}>
         <Text style={styles.modalPickerText}>{item}</Text>
       </TouchableOpacity>
     );
@@ -948,9 +943,9 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "justify",
   },
-  textoAlertHorario:{
+  textoAlertHorario: {
     fontSize: 16,
-    padding:10,
+    padding: 10,
     color: "black",
     textAlign: "center",
   },
@@ -1014,20 +1009,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
-  textInput:{
-    borderWidth:1,
-    borderColor:"#00000055",
+  textInput: {
+    borderWidth: 1,
+    borderColor: "#00000055",
     borderRadius: 10,
-    maxHeight:50,
-    maxWidth:"90%",
+    maxHeight: 50,
+    maxWidth: "90%",
     height: 50,
     width: "80%",
-    paddingTop:5,
-    paddingBottom:5,
-    paddingLeft:10,
-    paddingRight:10,
-    marginTop:20,
-  }
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 20,
+  },
 });
 
 export {
@@ -1044,5 +1039,5 @@ export {
   ModalAlertAtt,
   ModalEnviaMotivo,
   ModalAlertHorario,
-  ModalAlertConfCanc
+  ModalAlertConfCanc,
 };

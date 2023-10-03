@@ -41,17 +41,12 @@ function Login({ navigation, route }) {
   const [termoAceito, setTermAceito] = useState(false);
   const [tradePassword, setTradePassword] = useState(false);
   const {
-    idUser,
     setIdUser,
-    codPessoa,
     setCodPessoa,
-    idEmpresa,
     setIdEmpresa,
-    codigoUsuario,
     setCodigoUsuario,
   } = useContext(AuthContext);
   const [textErr, setTextErr] = useState("");
-  const [list, setList] = useState([]);
   const storeData = async (login, password) => {
     try {
       await AsyncStorage.setItem("password", password);
@@ -91,7 +86,7 @@ function Login({ navigation, route }) {
     let numberVersion = "";
     let platform = "";
     if (Platform.OS == "android") {
-      numberVersion = 29;
+      numberVersion = 30;
       platform = "android";
     } else if (Platform.OS == "ios") {
       numberVersion = 18;
@@ -200,9 +195,6 @@ function Login({ navigation, route }) {
         })
         .catch((error) => {
           alert("3: " + url + "login " + error);
-          console.log("====================================");
-          console.log(error);
-          console.log("====================================");
         });
     }
   }

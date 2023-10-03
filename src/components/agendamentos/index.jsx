@@ -1,18 +1,20 @@
 import React, { useContext, useState } from "react";
+import { View, Text, TouchableOpacity, Image, Modal } from "react-native";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Modal,
-} from "react-native";
-import { ModalAppConfirmaAgendamento, ModalAppNaoConfirmaAgendamento, ModalAppCovid, ModalAlertConf, ModalAlertNaoConf, ModalEnviaMotivo, ModalAlertHorario, ModalAlertConfCanc } from "../Modal/ModalApp";
-import styles from './styles.jsx'
-import { AuthContext } from '../../contexts/ContextApi.jsx';
-
+  ModalAppConfirmaAgendamento,
+  ModalAppNaoConfirmaAgendamento,
+  ModalAppCovid,
+  ModalAlertConf,
+  ModalAlertNaoConf,
+  ModalEnviaMotivo,
+  ModalAlertHorario,
+  ModalAlertConfCanc,
+} from "../Modal/ModalApp";
+import styles from "./styles.jsx";
+import { AuthContext } from "../../contexts/ContextApi.jsx";
 
 function Agendamento(props) {
-  const { setHorarioAlert12H } = useContext(AuthContext)
+  const { setHorarioAlert12H } = useContext(AuthContext);
   const [modalConfirm, setModalConfirm] = useState(false);
 
   const [modalNoConfirm, setModalNoConfirm] = useState(false);
@@ -27,7 +29,7 @@ function Agendamento(props) {
 
   const [modalAlertHorario, setModalAlertHorario] = useState(false);
 
-  const [modalAlertConfCanc, setModalAlertConfCanc] = useState(false)
+  const [modalAlertConfCanc, setModalAlertConfCanc] = useState(false);
 
   function openModalCovid() {
     if (modalCovid == false) {
@@ -92,53 +94,48 @@ function Agendamento(props) {
     aux_nome_profissional = props.data.profissionalNome;
   } else if (aux_vector.length == 2) {
     //aux_nome_profissional = aux_vector[1].split(":");
-    aux_nome_profissional = aux_vector[0] + ' ' + aux_vector[1];
+    aux_nome_profissional = aux_vector[0] + " " + aux_vector[1];
   } else if (aux_vector.length >= 3) {
     //aux_nome_profissional = aux_vector[0];
-    aux_nome_profissional = aux_vector[0] + ' ' + aux_vector[1] + ' ' + aux_vector[2];
+    aux_nome_profissional =
+      aux_vector[0] + " " + aux_vector[1] + " " + aux_vector[2];
   }
-
 
   let nome_profissional = aux_nome_profissional;
   let aux_vector_data = props.data.data.split("-");
   let dataFormatada =
     aux_vector_data[2] + "/" + aux_vector_data[1] + "/" + aux_vector_data[0];
   let horaFormatada = props.data.horaInicial.substring(0, 5);
-  let foto_medico = ''
+  let foto_medico = "";
 
-  if (props.data.sexo == 'M') {
-    foto_medico = '../../assets/medico.png'
+  if (props.data.sexo == "M") {
+    foto_medico = "../../assets/medico.png";
   } else {
-    foto_medico = '../../assets/medica2.png'
+    foto_medico = "../../assets/medica2.png";
   }
 
   //alert(props.foto)
 
   const openNodal = () => {
-
     const date = new Date();
 
-    const dataHoraAgen = new Date(props.data.data + "T" + props.data.horaInicial);
+    const dataHoraAgen = new Date(
+      props.data.data + "T" + props.data.horaInicial
+    );
 
     const diffDate = dataHoraAgen.getDate() - date.getDate();
 
     const diffHora = dataHoraAgen.getUTCHours() - date.getHours();
 
     if (diffDate == 0) {
-
       if (diffHora <= 12 || diffHora >= 0) {
-        setHorarioAlert12H(true)
+        setHorarioAlert12H(true);
         openModalAlertHorario();
-
       }
-
     } else {
-
       openModalNoConfirmar();
-
     }
-
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -151,7 +148,7 @@ function Agendamento(props) {
         <View style={styles.containerMain_1}>
           <Image
             style={styles.img}
-            source={require('../../assets/medicos.png')}
+            source={require("../../assets/medicos.png")}
           />
 
           <View style={styles.viewTexto}>
@@ -161,7 +158,6 @@ function Agendamento(props) {
         </View>
 
         <View style={styles.containerMain_2}>
-
           <Text style={styles.textoTituloMain}>
             Consulta dia: {dataFormatada} ás {horaFormatada}
           </Text>
@@ -180,7 +176,10 @@ function Agendamento(props) {
         <TouchableOpacity style={styles.botaoAreaCancela} onPress={openNodal}>
           <Text style={styles.botaoTextoCancela}>NÃO COMPARECER</Text>
         </TouchableOpacity>
-        <Modal transparent={true} animationType="fadeIn" visible={modalNoConfirm}>
+        <Modal
+          transparent={true}
+          animationType="fadeIn"
+          visible={modalNoConfirm}>
           <View style={styles.modalContainer}>
             <ModalAppNaoConfirmaAgendamento
               fechar={() => sairNoConf()}
@@ -194,8 +193,7 @@ function Agendamento(props) {
         </Modal>
         <TouchableOpacity
           style={styles.botaoAreaConfirma}
-          onPress={openModalConfirmar}
-        >
+          onPress={openModalConfirmar}>
           <Text style={styles.botaoTextoConfirma}>COMPARECER</Text>
         </TouchableOpacity>
         <Modal transparent={true} animationType="fadeIn" visible={modalConfirm}>
@@ -208,10 +206,14 @@ function Agendamento(props) {
               fechar={() => openModalConfirmar()}
               clinica={props.data.accountUnidadeDescricao}
               abrirAlert={() => openModalAlertConf()}
+              obj={props.data}
             />
           </View>
         </Modal>
-        <Modal transparent={true} animationType="fadeIn" visible={modalAlertConf}>
+        <Modal
+          transparent={true}
+          animationType="fadeIn"
+          visible={modalAlertConf}>
           <View style={styles.modalContainer}>
             <ModalAlertConf
               modalOpen={() => openModalAlertConf()}
@@ -221,57 +223,65 @@ function Agendamento(props) {
             />
           </View>
         </Modal>
-        <Modal transparent={true} animationType="fadeIn" visible={modalAlertNaoConf}>
+        <Modal
+          transparent={true}
+          animationType="fadeIn"
+          visible={modalAlertNaoConf}>
           <View style={styles.modalContainer}>
             <ModalAlertNaoConf
-              modalOpen={() => { setModalAlertConfCanc(!modalAlertConfCanc) }}
+              modalOpen={() => {
+                setModalAlertConfCanc(!modalAlertConfCanc);
+              }}
               textoBotao="OK!"
               texto="Agendamento Cancelado"
             />
           </View>
         </Modal>
-        <Modal transparent={true} animationType="fadeIn" visible={modalAlertConfCanc}>
+        <Modal
+          transparent={true}
+          animationType="fadeIn"
+          visible={modalAlertConfCanc}>
           <ModalAlertConfCanc
             obj={props.data}
-            modalOpen={() => { setModalAlertConfCanc(!modalAlertConfCanc) }}
+            modalOpen={() => {
+              setModalAlertConfCanc(!modalAlertConfCanc);
+            }}
             abrirAlert={() => openModalAlertNaoConf()}
           />
         </Modal>
         <Modal transparent={true} animationType="fadeIn" visible={modalCovid}>
           <View style={styles.modalContainer}>
-            <ModalAppCovid
-              funcao={() => openModalCovid()}
-            />
+            <ModalAppCovid funcao={() => openModalCovid()} />
           </View>
         </Modal>
       </View>
-      <Modal transparent={true} animationType="fadeIn" visible={modalMotivoCancel}>
+      <Modal
+        transparent={true}
+        animationType="fadeIn"
+        visible={modalMotivoCancel}>
         <View style={styles.modalContainer}>
           <ModalEnviaMotivo
-
             fechar={() => openModalMotivoCancel()}
             obj={props.data}
             abrir={() => openModalAlertNaoConf()}
-
           />
         </View>
       </Modal>
 
-      <Modal transparent={true} animationType="fadeIn" visible={modalAlertHorario}>
+      <Modal
+        transparent={true}
+        animationType="fadeIn"
+        visible={modalAlertHorario}>
         <View style={styles.modalContainer}>
           <ModalAlertHorario
-
             fechar={() => openModalAlertHorario()}
             obj={props.data}
             modalOpen={() => openModalNoConfirmar()}
-
           />
         </View>
       </Modal>
-
     </View>
   );
 }
-
 
 export default Agendamento;
