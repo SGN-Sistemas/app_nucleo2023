@@ -30,6 +30,10 @@ const icons = {
   Horarios: {
     name: "alarm-outline"
   }
+  ,
+  Departamentos: {
+    name: "md-headset"
+  }
 };
 
 export default function Home() {

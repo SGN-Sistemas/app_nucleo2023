@@ -1,0 +1,30 @@
+[
+    {
+        "Id": 1,
+        "Departamento" : "Administração",
+        "Descricao": "Lorem ipsum dolor sit amet. Qui optio unde ad voluptas tempora eos iure possimus. Eum culpa consequatur qui dolore quisquam aut illum dolorem sit sint illum qui quaerat eveniet et nesciunt alias ad accusantium omnis! Ab quos pariatur in sint sint aut officia numquam ex voluptates blanditiis ut veniam tenetur.",
+        "ImageUrl": "https://www.iepe.sp.gov.br/fotos/f8de479127f6e32914197707c54428ed.jpg",
+        "hasMessages": false
+    },
+    {
+        "Id": 2,
+        "Departamento" : "Atendimento",
+        "Descricao": "Lorem ipsum dolor sit amet. Qui optio",
+        "ImageUrl": "https://i.redd.it/6k3jdtgv3qnb1.jpg",
+        "hasMessages": true
+    },
+    {
+        "Id": 3,
+        "Departamento" : "Sócias",
+        "Descricao": "Lorem ipsum dolor sit amet. Qui optio unde ad voluptas tempora eos iure possimus. Eum culpa consequatur qui dolore quisquam aut illum dolorem sit sint illum qui quaerat eveniet et nesciunt alias ad accusantium omnis! Ab quos pariatur in sint sint aut officia numquam ex voluptates blanditiis ut veniam tenetur.",
+        "ImageUrl": "https://pbs.twimg.com/media/F3-z2K9XQAAn0lg.jpg",
+        "hasMessages": false
+    },
+    {
+        "Id": 4,
+        "Departamento" : "Teste",
+        "Descricao": "Lorem ipsum dolor sit amet. Qui optio unde ad voluptas tempora eos iure possimus. Eum culpa consequatur qui dolore quisquam aut illum dolorem sit sint illum qui quaerat eveniet et nesciunt alias ad accusantium omnis! Ab quos pariatur in sint sint aut officia numquam ex voluptates blanditiis ut veniam tenetur.",
+        "ImageUrl": "https://imgb.ifunny.co/images/4917cc0db0df90ac4cd79ebae9732358808244f069eb9d5dcdba8a75ff9335ea_1.jpg",
+        "hasMessages": true
+    }
+]
