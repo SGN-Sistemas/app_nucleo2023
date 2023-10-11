@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { validatePassword } from "../../utils/validPassword";
 import { url } from "../../utils/url";
 
-function TradePassword({ navigation, route }) {
+function TradePassword({ navigation }) {
   const [email, setEmail] = useState("");
   const [isModalConfirm, setIsModalConfirm] = useState(false);
   const [isModalError, setIsModalError] = useState(false);
@@ -42,7 +42,7 @@ function TradePassword({ navigation, route }) {
       setError(valid);
       if (valid != false) {
         setIsModalError(true);
-        return;
+        return; 
       }
 
       fetch(url + "recuperarSenha", {
@@ -58,7 +58,7 @@ function TradePassword({ navigation, route }) {
             setIsModalConfirm(true);
             return;
           }
-          setTextErr(["Email nao cadastrado!"]);
+          setTextErr(["E-mail não cadastrado! Por favor, utilizar e-mail fornecido no cadastro de usuário"]);
           setIsModalError(true);
           setError(false);
         })
@@ -97,17 +97,17 @@ function TradePassword({ navigation, route }) {
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView
-        style={{ flex: 1 }}
+        style={{ flex: 1, width: '100%' }}
         contentContainerStyle={{ flexGrow: 1 }}>
         <ImageBackground
-          source={require("../../assets/lgpd_protecao_dados.png")}
-          resizeMode="cover"
-          style={styles.image}>
+          source={require("../../assets/nucleo_novo2.jpg")}
+          style={styles.image}
+        >
           <View style={styles.containerImagem}>
-            <Image
+            {/* <Image
               style={styles.imageLogo}
               source={require("../../assets/incentivarLogo.png")}
-            />
+            /> */}
           </View>
 
           <TextInput
@@ -121,7 +121,7 @@ function TradePassword({ navigation, route }) {
             <TextInput
               style={styles.inputSenha}
               secureTextEntry={hidePass}
-              placeholder="Senha"
+              placeholder="Nova senha"
               autoCorrect={false}
               value={senha}
               onChangeText={(text) => setSenha(text)}
@@ -139,7 +139,7 @@ function TradePassword({ navigation, route }) {
           </View>
 
           <TouchableOpacity style={styles.btnSubmit} onPress={alteraSenha}>
-            <Text style={styles.textSubmit}> Recuperar </Text>
+            <Text style={styles.textSubmit}> Trocar Senha </Text>
           </TouchableOpacity>
 
           <Modal

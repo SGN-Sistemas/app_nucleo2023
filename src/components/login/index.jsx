@@ -13,6 +13,7 @@ import {
   Platform,
   BackHandler,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import styles from "./styles";
 import {
@@ -40,12 +41,9 @@ function Login({ navigation, route }) {
   const [nameIcon, setNameIcon] = useState(false);
   const [termoAceito, setTermAceito] = useState(false);
   const [tradePassword, setTradePassword] = useState(false);
-  const {
-    setIdUser,
-    setCodPessoa,
-    setIdEmpresa,
-    setCodigoUsuario,
-  } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const { setIdUser, setCodPessoa, setIdEmpresa, setCodigoUsuario } =
+    useContext(AuthContext);
   const [textErr, setTextErr] = useState("");
   const storeData = async (login, password) => {
     try {
@@ -75,13 +73,10 @@ function Login({ navigation, route }) {
   const sairError = () => {
     setIsModalError(false);
   };
-  if (versao == 0) {
-    versaoVerificar();
-  }
-  function versaoVerificar() {
+  useEffect(() => {
     verficarVersao();
-    setVersao(1);
-  }
+  }, []);
+
   function verficarVersao() {
     let numberVersion = "";
     let platform = "";
@@ -142,17 +137,20 @@ function Login({ navigation, route }) {
   }, []);
 
   function entrar(login, senha, termoAceito) {
+    setLoading(true);
     var pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,}$/;
     if (!termoAceito) {
       if (!nameIcon) {
         setTextErr("Aceite o termo");
         setIsModalError(true);
+        setLoading(false);
         return;
       }
     }
     if (login == "" || senha == "") {
       setTextErr("Preencha todos os campos");
       setIsModalError(true);
+      setLoading(false);
     } else {
       if (!pattern.test(senha)) {
         setTextErr(
@@ -163,7 +161,6 @@ function Login({ navigation, route }) {
         return;
       }
       const data = new Date();
-
       fetch(url + "login", {
         method: "POST",
         body: JSON.stringify({
@@ -184,18 +181,19 @@ function Login({ navigation, route }) {
             setIdEmpresa(json.idempresa);
             setCodigoUsuario(json.codigo_usuario);
 
-            if (json.id != "" && json.id != 0) {
-              setIdUser(json.id);
+            // if (json.id != "" && json.id != 0) {
+            //   setIdUser(json.id);
               storeData(login, senha);
               navigation.navigate("Home");
-            } else {
-              buscarPaciente(json.cpf, json.telefone);
-            }
+            //} else {
+            //   buscarPaciente(json.cpf, json.telefone);
+            // }
           }
         })
         .catch((error) => {
           alert("3: " + url + "login " + error);
         });
+      setLoading(false);
     }
   }
 
@@ -230,72 +228,72 @@ function Login({ navigation, route }) {
     }
   };
 
-  async function buscarPaciente(cpf, telefone) {
-    await fetch("https://api.ninsaude.com/v1/oauth2/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "cache-control": "no-cache",
-      },
-      body:
-        "grant_type=refresh_token&refresh_token=" + route.params.refresh_token,
-    })
-      .then((resp) => resp.json())
-      .then(async (json) => {
-        let access_token = json.access_token;
+  // async function buscarPaciente(cpf, telefone) {
+  //   await fetch("https://api.ninsaude.com/v1/oauth2/token", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //       "cache-control": "no-cache",
+  //     },
+  //     body:
+  //       "grant_type=refresh_token&refresh_token=" + route.params.refresh_token,
+  //   })
+  //     .then((resp) => resp.json())
+  //     .then(async (json) => {
+  //       let access_token = json.access_token;
 
-        await fetch(
-          "https://api.ninsaude.com/v1/cadastro_paciente/listar?cpf=" +
-            cpf +
-            "&foneCelular=" +
-            telefone,
-          {
-            headers: {
-              Authorization: "bearer " + access_token,
-              "Cache-Control": "no-cache",
-              "Content-Type": "application/json",
-            },
-          }
-        )
-          .then((resp) => resp.json())
-          .then((json) => {
-            var result = json.result[0];
+  //       await fetch(
+  //         "https://api.ninsaude.com/v1/cadastro_paciente/listar?cpf=" +
+  //           cpf +
+  //           "&foneCelular=" +
+  //           telefone,
+  //         {
+  //           headers: {
+  //             Authorization: "bearer " + access_token,
+  //             "Cache-Control": "no-cache",
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       )
+  //         .then((resp) => resp.json())
+  //         .then((json) => {
+  //           var result = json.result[0];
 
-            if (result) {
-              //alert(result.nome + ' parte 1')
-              let nomeUsuario = result.nome;
-              let idUsuario = result.id;
-              setIdUser(idUsuario);
-              enviarId(idUsuario, cpf, telefone);
-              navigation.navigate("Home");
-            } else {
-              alert("Não existe esse paciente no nosso sistema!");
-            }
-          })
-          .catch((error) =>
-            alert(
-              "Apolo: https://api.ninsaude.com/v1/cadastro_paciente/listar?cpf=" +
-                cpf +
-                "&foneCelular=" +
-                telefone
-            )
-          );
-      });
-  }
+  //           if (result) {
+  //             //alert(result.nome + ' parte 1')
+  //             let nomeUsuario = result.nome;
+  //             let idUsuario = result.id;
+  //             setIdUser(idUsuario);
+  //             enviarId(idUsuario, cpf, telefone);
+  //             navigation.navigate("Home");
+  //           } else {
+  //             alert("Não existe esse paciente no nosso sistema!");
+  //           }
+  //         })
+  //         .catch((error) =>
+  //           alert(
+  //             "Apolo: https://api.ninsaude.com/v1/cadastro_paciente/listar?cpf=" +
+  //               cpf +
+  //               "&foneCelular=" +
+  //               telefone
+  //           )
+  //         );
+  //     });
+  // }
 
-  const enviarId = (id, cpf, telefone) => {
-    fetch(url + "EnviaCodigo", {
-      method: "POST",
-      body: JSON.stringify({
-        id: id,
-        cpf: cpf,
-        telefone: telefone,
-      }),
-    })
-      .then((resp) => resp.json())
-      .then((json) => {})
-      .catch((error) => {});
-  };
+  // const enviarId = (id, cpf, telefone) => {
+  //   fetch(url + "EnviaCodigo", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       id: id,
+  //       cpf: cpf,
+  //       telefone: telefone,
+  //     }),
+  //   })
+  //     .then((resp) => resp.json())
+  //     .then((json) => {})
+  //     .catch((error) => {});
+  // };
 
   const backAction = () => {
     Alert.alert("Atenção!", "Tem certeza que deseja sair?", [
@@ -324,14 +322,13 @@ function Login({ navigation, route }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}>
       <ImageBackground
-        source={require("../../assets/lgpd_protecao_dados.png")}
-        resizeMode="cover"
+        source={require("../../assets/nucleo_novo2.jpg")}
         style={styles.image}>
         <View style={styles.containerImagem}>
-          <Image
+          {/* <Image
             style={styles.imageLogo}
             source={require("../../assets/incentivarLogo.png")}
-          />
+          /> */}
         </View>
 
         <View style={styles.containerForm}>
@@ -377,7 +374,7 @@ function Login({ navigation, route }) {
           <TouchableOpacity
             style={styles.btnRegister}
             onPress={irRecuperarSenha}>
-            <Text style={styles.textRegister}> Recuperar Senha </Text>
+            <Text style={styles.textRegister}> Trocar Senha </Text>
           </TouchableOpacity>
 
           <Modal
@@ -433,6 +430,15 @@ function Login({ navigation, route }) {
           </Modal>
         </View>
       </ImageBackground>
+      { 
+        loading
+          ?
+            <View style={styles.areaIndicator}>
+              <ActivityIndicator size={'large'}/>
+            </View>
+          : 
+            ""
+      }
     </KeyboardAvoidingView>
   );
 }

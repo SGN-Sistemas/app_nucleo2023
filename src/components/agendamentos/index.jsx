@@ -230,6 +230,7 @@ function Agendamento(props) {
           <View style={styles.modalContainer}>
             <ModalAlertNaoConf
               modalOpen={() => {
+                setModalAlertNaoConf(!modalAlertNaoConf)
                 setModalAlertConfCanc(!modalAlertConfCanc);
               }}
               textoBotao="OK!"

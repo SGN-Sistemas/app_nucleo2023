@@ -1,12 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons'
-
-
-import ListaAgendamentos from '../listaAgendamentos';
 import Chamados from './chamados'
 import Responsaveis from './responsavel';
 import Horarios from './horarios';
+import Agendamentos from './agendamentos';
 
 const Tab = createBottomTabNavigator();
 
@@ -56,7 +54,7 @@ export default function Home() {
     >
       <Tab.Screen
         name="Agendamentos"
-        component={ListaAgendamentos}
+        component={Agendamentos}
         options={{ headerShown: false }}
       />
       <Tab.Screen

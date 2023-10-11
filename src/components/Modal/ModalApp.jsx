@@ -18,6 +18,7 @@ import * as Linking from "expo-linking";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { url } from "../../utils/url.js";
+import axios from "axios";
 
 function ModalAppConfirma({ fechar, texto, textoBotao }) {
   const confirma = () => {
@@ -131,47 +132,25 @@ function ModalEnviaMotivo({ fechar, obj, abrir }) {
   };
 
   const enviarMotivo = async () => {
-    abrirAlert();
+    axios.post(url + 'salvarMotivo',{
+      id_agendamento: obj.id,
+      motivo: inputMotivo
+    })
+    .then((response) => {
 
-    // await fetch( url + "cancelaAgendamento", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/x-www-form-urlencoded",
-    //     "cache-control": "no-cache",
-    //   },
-    //   body: JSON.stringify({
-    //     "id_agendamento":obj.id,
-    //     "motivo":inputMotivo,
-    //     "idUser":idUser,
-    //   }),
-    // })
-    // .then((response)=>{
-
-    //   console.log('3====================================');
-    //   console.log({
-    //     "id_agendamento":obj.id,
-    //     "motivo":inputMotivo,
-    //     "idUser":idUser,
-    //   });
-    //   console.log('====================================');
-    //   response.json();
-
-    // })
-    // .then((resp) => {
-
-    //   console.log('1====================================');
-    //   console.log(resp);
-    //   console.log('====================================');
-    //   //error();
-
-    //   //abrirAlert();
-
-    // })
-    // .catch((error)=>{
-    //   console.log('2====================================');
-    //   console.log(error);
-    //   console.log('====================================');
-    // })
+      if(response.data === "Dado inserido corretamente"){
+        abrirAlert();
+        fechar();
+        return;
+      }
+      fechar();
+      alert('Erro ao inserir dado tente novamente')
+    })
+    .catch((err) => {
+      alert(err);
+    })
+    // abrirAlert();
+    // fechar();
   };
 
   return (
@@ -295,22 +274,20 @@ function ModalAppConfirmaAgendamento({
         )
           .then(async () => {
             const lgn = await AsyncStorage.getItem("login");
-
-            fetch(url + "inserirLog", {
-              method: "POST",
-              body: JSON.stringify({
-                LOAC_ACESSO_APP_ID: idUser,
-                LOAC_TIPO: "CONF",
-                LOAC_PRAZO_12H: "N",
-                LOAC_ID_AGENDAMENTO: obj.id,
-                USER_NAME: lgn,
-              }),
+            axios.post(url + 'inserirLog',{
+              LOAC_ACESSO_APP_ID: codigoUsuario,
+              LOAC_TIPO: "CONF",
+              LOAC_PRAZO_12H: "N",
+              LOAC_ID_AGENDAMENTO: obj.id,
+              USER_NAME: lgn,
             })
-              .then(() => {
+              .then((response)=>{
                 setAtt(!att);
                 abrirAlert();
               })
-              .catch(() => {});
+              .catch((e) => {
+                alert(e)
+              })
           })
           .catch((error) => alert("error: " + error));
       })
@@ -415,6 +392,7 @@ function ModalAppNaoConfirmaAgendamento({
           <TouchableOpacity
             style={styles.containerBotaoAgenSim}
             onPress={() => {
+              fechar();
               abrirAlert();
             }}>
             <Text style={styles.textoBotaoAgen}>Sim</Text>
@@ -455,6 +433,7 @@ function ModalAlertConfCanc({ modalOpen, abrirAlert, obj }) {
     useContext(AuthContext);
 
   const confirma = async () => {
+
     await fetch("https://api.ninsaude.com/v1/oauth2/token", {
       method: "POST",
       headers: {
@@ -534,23 +513,21 @@ function ModalAlertConfCanc({ modalOpen, abrirAlert, obj }) {
         )
           .then(async () => {
             const lgn = await AsyncStorage.getItem("login");
-
-
-            fetch(url + "inserirLog", {
-              method: "POST",
-              body: JSON.stringify({
-                LOAC_ACESSO_APP_ID: idUser,
-                LOAC_TIPO: "CANC",
-                LOAC_PRAZO_12H: "N",
-                LOAC_ID_AGENDAMENTO: obj.id,
-                USER_NAME: lgn,
-              }),
+            axios.post(url + 'inserirLog',{
+              LOAC_ACESSO_APP_ID: codigoUsuario,
+              LOAC_TIPO: "CANC",
+              LOAC_PRAZO_12H: "N",
+              LOAC_ID_AGENDAMENTO: obj.id,
+              USER_NAME: lgn,
             })
-              .then(() => {
+              .then((response)=>{
                 setAtt(!att);
                 abrirAlert();
+                fechar()
               })
-              .catch(() => {});
+              .catch((e) => {
+                alert(e)
+              })
           })
           .catch((error) => alert("error: " + error));
       })

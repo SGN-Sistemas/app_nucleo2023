@@ -37,6 +37,18 @@ const styles = StyleSheet.create({
     imagemCalen:{
       width:200,
       height:200
+    },
+    btnArea:{
+      flex:1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 30,
+      right: 30,
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      backgroundColor: '#E8C548',
     }
   })
   

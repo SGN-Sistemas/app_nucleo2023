@@ -61,8 +61,9 @@ const styles = StyleSheet.create({
   },
 
   textRegister: {
-    color: '#2A2C4B',
-    fontSize: 15,
+    color: '#FFF',
+    fontWeight: '900',
+    fontSize: 18,
     marginTop: 1
   },
   inputSenha: {
@@ -107,6 +108,16 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  areaIndicator:{
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: "#12121277",
+    position: 'absolute',
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
   }
